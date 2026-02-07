@@ -27,28 +27,26 @@ test.describe('API 엔드포인트 테스트', () => {
     expect(data.data).toHaveProperty('subjects');
   });
 
-  test('[BUG] GET /api/exams/{examCd} - 존재하지 않는 시험 조회 시 404 반환해야 함', async ({ request }) => {
+  test('[BUG-#1] GET /api/exams/{examCd} - 존재하지 않는 시험 조회 시 404 반환해야 함', async ({ request }) => {
     const response = await request.get(`${API_BASE_URL}/api/exams/NONEXISTENT`);
 
-    // 현재 버그: 500 반환
-    // 수정 후: 404 반환해야 함
-    // expect(response.status()).toBe(404);
+    // Fixed: GlobalExceptionHandler + EntityNotFoundException → 404
+    expect(response.status()).toBe(404);
 
-    // 현재 상태 확인 (버그 검증)
-    expect(response.status()).toBe(500);
+    const data = await response.json();
+    expect(data.success).toBe(false);
   });
 
-  test('[BUG] POST /api/exams - 빈 객체로 등록 시 400 반환해야 함', async ({ request }) => {
+  test('[BUG-#4] POST /api/exams - 빈 객체로 등록 시 400 반환해야 함', async ({ request }) => {
     const response = await request.post(`${API_BASE_URL}/api/exams`, {
       data: {},
     });
 
-    // 현재 버그: 500 반환
-    // 수정 후: 400 반환해야 함
-    // expect(response.status()).toBe(400);
+    // Fixed: @Valid + @NotBlank + GlobalExceptionHandler → 400
+    expect(response.status()).toBe(400);
 
-    // 현재 상태 확인 (버그 검증)
-    expect(response.status()).toBe(500);
+    const data = await response.json();
+    expect(data.success).toBe(false);
   });
 
   test('GET /api/exams/{examCd}/subjects - 과목 목록 조회가 성공해야 함', async ({ request }) => {
@@ -138,9 +136,9 @@ test.describe('API 엔드포인트 테스트', () => {
     const data = await response.json();
     expect(data.success).toBe(true);
 
-    // 삭제 확인
+    // 삭제 확인 — Fixed: 삭제 후 조회 시 404 반환
     const checkResponse = await request.get(`${API_BASE_URL}/api/exams/${testExamCd}`);
-    expect(checkResponse.status()).toBe(500); // 현재는 500, 수정 후 404
+    expect(checkResponse.status()).toBe(404);
   });
 });
 

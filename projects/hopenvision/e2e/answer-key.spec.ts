@@ -112,15 +112,13 @@ test.describe('Excel 가져오기 페이지', () => {
     await expect(page.getByText('클릭하거나 파일을 이 영역으로 드래그하세요')).toBeVisible();
   });
 
-  test('[BUG] 시험 목록으로 버튼이 올바른 경로로 이동해야 함', async ({ page }) => {
-    // 이 테스트는 버그 #3 검증용
-    // 현재 /exams로 이동하지만 /exam이어야 함
+  test('[BUG-#3] 시험 목록으로 버튼이 올바른 경로로 이동해야 함', async ({ page }) => {
+    // Fixed: ExcelImport.tsx에서 navigate('/exams') → navigate('/exam') 수정
 
-    // 파일 업로드 후 완료 상태에서만 버튼이 표시되므로
     // 뒤로가기 버튼으로 테스트
     await page.getByRole('button', { name: /뒤로가기/i }).click();
 
-    // 이전 페이지로 이동해야 함
+    // /exams 경로가 아닌 올바른 경로로 이동해야 함
     await expect(page).not.toHaveURL(/\/exams$/);
   });
 });

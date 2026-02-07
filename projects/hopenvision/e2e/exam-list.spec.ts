@@ -74,9 +74,8 @@ test.describe('시험 목록 페이지', () => {
     }
   });
 
-  test.fail('[BUG] passScore가 null일 때 "null점"이 표시되지 않아야 함', async ({ page }) => {
-    // 이 테스트는 Issue #2 버그 검증용
-    // 버그가 수정되면 test.fail() 제거 필요
+  test('[BUG-#2] passScore가 null일 때 "null점"이 표시되지 않아야 함', async ({ page }) => {
+    // Fixed: ExamList.tsx에서 null 체크 추가 — value != null ? `${value}점` : '-'
 
     // 테이블이 로드될 때까지 대기
     await page.waitForSelector('table');
@@ -84,9 +83,6 @@ test.describe('시험 목록 페이지', () => {
     // "null점" 텍스트가 없어야 함
     const nullText = page.getByText('null점');
     const count = await nullText.count();
-
-    // 현재 버그: count가 1 (null점이 표시됨)
-    // 수정 후: count가 0이어야 함
     expect(count).toBe(0);
   });
 });
