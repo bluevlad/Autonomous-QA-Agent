@@ -1,0 +1,51 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          EOF
+
+      - name: Stop existing services
+        run: |
+          docker compose -f docker-compose.prod.yml down --timeout 30 || true
+
+      - name: Build and start services
+        run: |
+          docker compose -f docker-compose.prod.yml build --no-cache
+          docker compose -f docker-compose.prod.yml up -d
+
+      - name: Wait for services to be ready
+        run: |
+          echo "Waiting for services to start..."
+          sleep 60
+
+      - name: Health check
+        run: |
+          echo "Checking frontend..."
+          curl -f -s -o /dev/null http://localhost:4060 || (echo "Frontend health check failed" && exit 1)
+          echo "Frontend OK"
+
+          echo "Checking backend..."
+          curl -f -s -o /dev/null "http://localhost:9050/api/exams?page=0&size=1" || (echo "Backend health check failed" && exit 1)
+          echo "Backend OK"
+
+          echo "All services are healthy."
+
+      - name: Cleanup old Docker images
+        run: |
+          docker image prune -f

@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+
+# Test outputs
+test-results/
+playwright-report/
+coverage/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Playwright
+/playwright/.cache/
+
+# Reports
+**/reports/*.html
+**/reports/*.json
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

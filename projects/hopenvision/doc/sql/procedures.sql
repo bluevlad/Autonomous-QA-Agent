@@ -1,0 +1,286 @@
+-- ============================================
+-- 공무원 시험 채점 시스템 저장 프로시저
+-- Oracle Database
+-- ============================================
+
+-- 1. 응시자 답안 채점 프로시저 (개별)
+CREATE OR REPLACE PROCEDURE SP_SCORE_APPLICANT (
+    P_EXAM_CD       IN VARCHAR2,
+    P_APPLICANT_NO  IN VARCHAR2,
+    P_RESULT        OUT VARCHAR2
+)
+IS
+    V_CORRECT_CNT   NUMBER;
+    V_RAW_SCORE     NUMBER;
+    V_CUT_LINE      NUMBER;
+BEGIN
+    -- 과목별 채점
+    FOR SUBJ IN (
+        SELECT SUBJECT_CD, SCORE_PER_Q, CUT_LINE
+        FROM EXAM_SUBJECT
+        WHERE EXAM_CD = P_EXAM_CD
+        AND IS_USE = 'Y'
+    ) LOOP
+        -- 정답 체크 및 업데이트
+        UPDATE EXAM_APPLICANT_ANS A
+        SET IS_CORRECT = (
+            SELECT CASE WHEN A.USER_ANS = K.CORRECT_ANS THEN 'Y' ELSE 'N' END
+            FROM EXAM_ANSWER_KEY K
+            WHERE K.EXAM_CD = A.EXAM_CD
+            AND K.SUBJECT_CD = A.SUBJECT_CD
+            AND K.QUESTION_NO = A.QUESTION_NO
+        )
+        WHERE A.EXAM_CD = P_EXAM_CD
+        AND A.APPLICANT_NO = P_APPLICANT_NO
+        AND A.SUBJECT_CD = SUBJ.SUBJECT_CD;
+
+        -- 정답 개수 계산
+        SELECT COUNT(*)
+        INTO V_CORRECT_CNT
+        FROM EXAM_APPLICANT_ANS
+        WHERE EXAM_CD = P_EXAM_CD
+        AND APPLICANT_NO = P_APPLICANT_NO
+        AND SUBJECT_CD = SUBJ.SUBJECT_CD
+        AND IS_CORRECT = 'Y';
+
+        -- 원점수 계산
+        V_RAW_SCORE := V_CORRECT_CNT * SUBJ.SCORE_PER_Q;
+
+        -- 과목별 성적 저장
+        MERGE INTO EXAM_APPLICANT_SCORE T
+        USING DUAL
+        ON (T.EXAM_CD = P_EXAM_CD
+            AND T.APPLICANT_NO = P_APPLICANT_NO
+            AND T.SUBJECT_CD = SUBJ.SUBJECT_CD)
+        WHEN MATCHED THEN
+            UPDATE SET
+                RAW_SCORE = V_RAW_SCORE,
+                CORRECT_CNT = V_CORRECT_CNT,
+                WRONG_CNT = (SELECT COUNT(*) FROM EXAM_APPLICANT_ANS
+                             WHERE EXAM_CD = P_EXAM_CD
+                             AND APPLICANT_NO = P_APPLICANT_NO
+                             AND SUBJECT_CD = SUBJ.SUBJECT_CD
+                             AND IS_CORRECT = 'N'),
+                CUT_PASS_YN = CASE WHEN V_RAW_SCORE >= SUBJ.CUT_LINE THEN 'Y' ELSE 'N' END,
+                UPD_DT = SYSDATE
+        WHEN NOT MATCHED THEN
+            INSERT (EXAM_CD, APPLICANT_NO, SUBJECT_CD, RAW_SCORE, CORRECT_CNT,
+                    WRONG_CNT, CUT_PASS_YN, REG_DT)
+            VALUES (P_EXAM_CD, P_APPLICANT_NO, SUBJ.SUBJECT_CD, V_RAW_SCORE, V_CORRECT_CNT,
+                    (SELECT COUNT(*) FROM EXAM_APPLICANT_ANS
+                     WHERE EXAM_CD = P_EXAM_CD
+                     AND APPLICANT_NO = P_APPLICANT_NO
+                     AND SUBJECT_CD = SUBJ.SUBJECT_CD
+                     AND IS_CORRECT = 'N'),
+                    CASE WHEN V_RAW_SCORE >= SUBJ.CUT_LINE THEN 'Y' ELSE 'N' END, SYSDATE);
+    END LOOP;
+
+    -- 응시자 총점/평균 계산
+    UPDATE EXAM_APPLICANT
+    SET TOTAL_SCORE = (
+            SELECT SUM(RAW_SCORE)
+            FROM EXAM_APPLICANT_SCORE
+            WHERE EXAM_CD = P_EXAM_CD
+            AND APPLICANT_NO = P_APPLICANT_NO
+        ),
+        AVG_SCORE = (
+            SELECT ROUND(AVG(RAW_SCORE), 2)
+            FROM EXAM_APPLICANT_SCORE
+            WHERE EXAM_CD = P_EXAM_CD
+            AND APPLICANT_NO = P_APPLICANT_NO
+        ),
+        SCORE_STATUS = 'Y',
+        UPD_DT = SYSDATE
+    WHERE EXAM_CD = P_EXAM_CD
+    AND APPLICANT_NO = P_APPLICANT_NO;
+
+    COMMIT;
+    P_RESULT := 'SUCCESS';
+
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        P_RESULT := 'ERROR: ' || SQLERRM;
+END SP_SCORE_APPLICANT;
+/
+
+-- 2. 전체 응시자 일괄 채점 프로시저
+CREATE OR REPLACE PROCEDURE SP_SCORE_ALL_APPLICANTS (
+    P_EXAM_CD   IN VARCHAR2
+)
+IS
+    V_RESULT VARCHAR2(500);
+BEGIN
+    FOR APP IN (
+        SELECT APPLICANT_NO
+        FROM EXAM_APPLICANT
+        WHERE EXAM_CD = P_EXAM_CD
+        AND SCORE_STATUS = 'N'
+    ) LOOP
+        SP_SCORE_APPLICANT(P_EXAM_CD, APP.APPLICANT_NO, V_RESULT);
+    END LOOP;
+
+    COMMIT;
+END SP_SCORE_ALL_APPLICANTS;
+/
+
+-- 3. 순위 계산 프로시저
+CREATE OR REPLACE PROCEDURE SP_CALC_RANKING (
+    P_EXAM_CD   IN VARCHAR2
+)
+IS
+BEGIN
+    -- 전체 순위 계산
+    MERGE INTO EXAM_APPLICANT T
+    USING (
+        SELECT APPLICANT_NO,
+               RANK() OVER (ORDER BY TOTAL_SCORE DESC) AS RANKING
+        FROM EXAM_APPLICANT
+        WHERE EXAM_CD = P_EXAM_CD
+        AND SCORE_STATUS = 'Y'
+    ) S
+    ON (T.EXAM_CD = P_EXAM_CD AND T.APPLICANT_NO = S.APPLICANT_NO)
+    WHEN MATCHED THEN
+        UPDATE SET T.RANKING = S.RANKING, T.UPD_DT = SYSDATE;
+
+    -- 과목별 순위 계산
+    MERGE INTO EXAM_APPLICANT_SCORE T
+    USING (
+        SELECT APPLICANT_NO, SUBJECT_CD,
+               RANK() OVER (PARTITION BY SUBJECT_CD ORDER BY RAW_SCORE DESC) AS SUBJECT_RANK
+        FROM EXAM_APPLICANT_SCORE
+        WHERE EXAM_CD = P_EXAM_CD
+    ) S
+    ON (T.EXAM_CD = P_EXAM_CD
+        AND T.APPLICANT_NO = S.APPLICANT_NO
+        AND T.SUBJECT_CD = S.SUBJECT_CD)
+    WHEN MATCHED THEN
+        UPDATE SET T.SUBJECT_RANK = S.SUBJECT_RANK, T.UPD_DT = SYSDATE;
+
+    COMMIT;
+END SP_CALC_RANKING;
+/
+
+-- 4. 합격 판정 프로시저
+CREATE OR REPLACE PROCEDURE SP_JUDGE_PASS (
+    P_EXAM_CD   IN VARCHAR2
+)
+IS
+    V_PASS_SCORE    NUMBER;
+    V_CUT_FAIL_CNT  NUMBER;
+BEGIN
+    -- 시험 합격 기준 점수 조회
+    SELECT PASS_SCORE INTO V_PASS_SCORE
+    FROM EXAM_MST
+    WHERE EXAM_CD = P_EXAM_CD;
+
+    -- 응시자별 합격 판정
+    FOR APP IN (
+        SELECT A.APPLICANT_NO, A.TOTAL_SCORE, A.AVG_SCORE, A.APPLY_AREA, A.APPLY_TYPE
+        FROM EXAM_APPLICANT A
+        WHERE A.EXAM_CD = P_EXAM_CD
+        AND A.SCORE_STATUS = 'Y'
+    ) LOOP
+        -- 과락 과목 수 체크
+        SELECT COUNT(*)
+        INTO V_CUT_FAIL_CNT
+        FROM EXAM_APPLICANT_SCORE
+        WHERE EXAM_CD = P_EXAM_CD
+        AND APPLICANT_NO = APP.APPLICANT_NO
+        AND CUT_PASS_YN = 'N';
+
+        -- 합격 판정
+        -- 조건1: 과락 과목이 없어야 함
+        -- 조건2: 평균 점수가 합격 기준 이상
+        UPDATE EXAM_APPLICANT
+        SET PASS_YN = CASE
+                        WHEN V_CUT_FAIL_CNT > 0 THEN 'N'  -- 과락
+                        WHEN APP.AVG_SCORE >= V_PASS_SCORE THEN 'Y'  -- 합격
+                        ELSE 'N'  -- 불합격
+                      END,
+            UPD_DT = SYSDATE
+        WHERE EXAM_CD = P_EXAM_CD
+        AND APPLICANT_NO = APP.APPLICANT_NO;
+    END LOOP;
+
+    COMMIT;
+END SP_JUDGE_PASS;
+/
+
+-- 5. 통계 생성 프로시저
+CREATE OR REPLACE PROCEDURE SP_MAKE_STATISTICS (
+    P_EXAM_CD   IN VARCHAR2
+)
+IS
+BEGIN
+    -- 전체 통계
+    MERGE INTO EXAM_STAT T
+    USING (
+        SELECT P_EXAM_CD AS EXAM_CD,
+               'ALL' AS APPLY_AREA,
+               'ALL' AS SUBJECT_CD,
+               COUNT(*) AS APPLICANT_CNT,
+               ROUND(AVG(AVG_SCORE), 2) AS AVG_SCORE,
+               MAX(TOTAL_SCORE) AS MAX_SCORE,
+               MIN(TOTAL_SCORE) AS MIN_SCORE,
+               PERCENTILE_CONT(0.03) WITHIN GROUP (ORDER BY AVG_SCORE DESC) AS TOP_3_SCORE,
+               PERCENTILE_CONT(0.10) WITHIN GROUP (ORDER BY AVG_SCORE DESC) AS TOP_10_SCORE
+        FROM EXAM_APPLICANT
+        WHERE EXAM_CD = P_EXAM_CD
+        AND SCORE_STATUS = 'Y'
+    ) S
+    ON (T.EXAM_CD = S.EXAM_CD AND NVL(T.APPLY_AREA,'ALL') = S.APPLY_AREA AND NVL(T.SUBJECT_CD,'ALL') = S.SUBJECT_CD)
+    WHEN MATCHED THEN
+        UPDATE SET
+            T.APPLICANT_CNT = S.APPLICANT_CNT,
+            T.AVG_SCORE = S.AVG_SCORE,
+            T.MAX_SCORE = S.MAX_SCORE,
+            T.MIN_SCORE = S.MIN_SCORE,
+            T.TOP_3_SCORE = S.TOP_3_SCORE,
+            T.TOP_10_SCORE = S.TOP_10_SCORE,
+            T.UPD_DT = SYSDATE
+    WHEN NOT MATCHED THEN
+        INSERT (EXAM_CD, APPLY_AREA, SUBJECT_CD, APPLICANT_CNT, AVG_SCORE,
+                MAX_SCORE, MIN_SCORE, TOP_3_SCORE, TOP_10_SCORE, REG_DT)
+        VALUES (S.EXAM_CD, NULL, NULL, S.APPLICANT_CNT, S.AVG_SCORE,
+                S.MAX_SCORE, S.MIN_SCORE, S.TOP_3_SCORE, S.TOP_10_SCORE, SYSDATE);
+
+    -- 과목별 통계
+    FOR SUBJ IN (
+        SELECT SUBJECT_CD FROM EXAM_SUBJECT WHERE EXAM_CD = P_EXAM_CD AND IS_USE = 'Y'
+    ) LOOP
+        MERGE INTO EXAM_STAT T
+        USING (
+            SELECT P_EXAM_CD AS EXAM_CD,
+                   'ALL' AS APPLY_AREA,
+                   SUBJ.SUBJECT_CD AS SUBJECT_CD,
+                   COUNT(*) AS APPLICANT_CNT,
+                   ROUND(AVG(RAW_SCORE), 2) AS AVG_SCORE,
+                   MAX(RAW_SCORE) AS MAX_SCORE,
+                   MIN(RAW_SCORE) AS MIN_SCORE,
+                   PERCENTILE_CONT(0.03) WITHIN GROUP (ORDER BY RAW_SCORE DESC) AS TOP_3_SCORE,
+                   PERCENTILE_CONT(0.10) WITHIN GROUP (ORDER BY RAW_SCORE DESC) AS TOP_10_SCORE
+            FROM EXAM_APPLICANT_SCORE
+            WHERE EXAM_CD = P_EXAM_CD
+            AND SUBJECT_CD = SUBJ.SUBJECT_CD
+        ) S
+        ON (T.EXAM_CD = S.EXAM_CD AND NVL(T.APPLY_AREA,'ALL') = S.APPLY_AREA AND NVL(T.SUBJECT_CD,'ALL') = S.SUBJECT_CD)
+        WHEN MATCHED THEN
+            UPDATE SET
+                T.APPLICANT_CNT = S.APPLICANT_CNT,
+                T.AVG_SCORE = S.AVG_SCORE,
+                T.MAX_SCORE = S.MAX_SCORE,
+                T.MIN_SCORE = S.MIN_SCORE,
+                T.TOP_3_SCORE = S.TOP_3_SCORE,
+                T.TOP_10_SCORE = S.TOP_10_SCORE,
+                T.UPD_DT = SYSDATE
+        WHEN NOT MATCHED THEN
+            INSERT (EXAM_CD, APPLY_AREA, SUBJECT_CD, APPLICANT_CNT, AVG_SCORE,
+                    MAX_SCORE, MIN_SCORE, TOP_3_SCORE, TOP_10_SCORE, REG_DT)
+            VALUES (S.EXAM_CD, NULL, S.SUBJECT_CD, S.APPLICANT_CNT, S.AVG_SCORE,
+                    S.MAX_SCORE, S.MIN_SCORE, S.TOP_3_SCORE, S.TOP_10_SCORE, SYSDATE);
+    END LOOP;
+
+    COMMIT;
+END SP_MAKE_STATISTICS;
+/

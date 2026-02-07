@@ -1,0 +1,35 @@
+# IDE
+.idea/
+*.iml
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# API (Spring Boot / Gradle)
+api/.gradle/
+api/build/
+api/out/
+api/*.jar
+api/*.war
+
+# Web (Node.js / Vite)
+web/node_modules/
+web/dist/
+web/.env.local
+web/.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Temp
+tmp/
+temp/
+
+# Environment files (secrets)
+.env
+.env.local
+!.env.example

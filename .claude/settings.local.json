@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:study.unmong.com)",
+      "Bash(git clone:*)",
+      "Bash(curl -s -L http://study.unmong.com:4060/)",
+      "Bash(curl:*)",
+      "Bash(gh:*)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

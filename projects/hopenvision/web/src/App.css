@@ -1,0 +1,19 @@
+/* 전역 스타일 */
+#root {
+  min-height: 100vh;
+}
+
+/* 링크 스타일 */
+a {
+  color: #1890ff;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #40a9ff;
+}
+
+/* 테이블 내 버튼 간격 */
+.ant-space-compact {
+  gap: 4px;
+}

@@ -1,0 +1,29 @@
+{
+  "name": "autonomous-qa-agent",
+  "version": "1.0.0",
+  "description": "Autonomous QA testing hub for multiple web projects",
+  "type": "module",
+  "scripts": {
+    "test:all": "playwright test",
+    "test:hopenvision": "playwright test --project=hopenvision",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report",
+    "issues:create": "node scripts/create-issues.js",
+    "project:add": "node scripts/add-project.js"
+  },
+  "keywords": [
+    "qa",
+    "testing",
+    "playwright",
+    "automation",
+    "e2e"
+  ],
+  "author": "bluevlad",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0"
+  }
+}
