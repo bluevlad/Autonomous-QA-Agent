@@ -9,7 +9,13 @@
       "Bash(gh:*)",
       "Bash(git init:*)",
       "Bash(git remote add:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial setup: Autonomous QA Agent 테스트 허브 구축\n\n- QA 테스트 통합 관리 프로젝트 구조 설정\n- Playwright 기반 E2E/API 테스트 프레임워크 구성\n- HopenVision 프로젝트 테스트 추가\n  - 시험 목록, 등록/수정, 정답 입력 E2E 테스트\n  - API 엔드포인트 테스트\n  - 발견된 이슈 8건 GitHub에 등록 완료 \\(#1-#8\\)\n- 공통 유틸리티 \\(issue-creator, test-helpers\\)\n- 문서 작성 \\(TESTING_GUIDE, ADDING_PROJECT, ISSUE_WORKFLOW\\)\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(npm install)",
+      "Bash(npx playwright install:*)",
+      "Bash(npx playwright test:*)"
     ]
   }
 }

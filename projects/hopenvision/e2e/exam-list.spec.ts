@@ -17,15 +17,21 @@ test.describe('시험 목록 페이지', () => {
   });
 
   test('검색 필터가 동작해야 함', async ({ page }) => {
-    // 시험유형 필터 선택
-    await page.getByPlaceholder('시험유형').click();
-    await page.getByText('9급 공무원').click();
+    // 페이지 완전 로드 대기
+    await page.waitForLoadState('networkidle');
+    await page.waitForSelector('table', { timeout: 10000 });
+
+    // 시험유형 Select 클릭 (placeholder 텍스트로 찾기)
+    await page.getByText('시험유형').first().click({ force: true });
+
+    // 드롭다운에서 옵션 선택 (Ant Design option)
+    await page.getByTitle('9급 공무원').click();
 
     // 검색 버튼 클릭
     await page.getByRole('button', { name: /검색/i }).click();
 
     // 페이지가 다시 로드되어야 함 (테이블이 여전히 존재)
-    await expect(page.locator('table')).toBeVisible();
+    await expect(page.locator('table').first()).toBeVisible();
   });
 
   test('초기화 버튼이 필터를 리셋해야 함', async ({ page }) => {
@@ -68,7 +74,10 @@ test.describe('시험 목록 페이지', () => {
     }
   });
 
-  test('[BUG] passScore가 null일 때 "null점"이 표시되지 않아야 함', async ({ page }) => {
+  test.fail('[BUG] passScore가 null일 때 "null점"이 표시되지 않아야 함', async ({ page }) => {
+    // 이 테스트는 Issue #2 버그 검증용
+    // 버그가 수정되면 test.fail() 제거 필요
+
     // 테이블이 로드될 때까지 대기
     await page.waitForSelector('table');
 
@@ -76,8 +85,8 @@ test.describe('시험 목록 페이지', () => {
     const nullText = page.getByText('null점');
     const count = await nullText.count();
 
-    // 이 테스트는 현재 버그가 있으므로 실패할 것임
-    // 버그 수정 후 통과해야 함
+    // 현재 버그: count가 1 (null점이 표시됨)
+    // 수정 후: count가 0이어야 함
     expect(count).toBe(0);
   });
 });
