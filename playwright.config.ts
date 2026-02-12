@@ -117,5 +117,54 @@ export default defineConfig({
         github: 'bluevlad/AllergyNewsLetter',
       },
     },
+
+    // ============================================
+    // AcademyInsight 프로젝트
+    // ============================================
+    {
+      name: 'academyinsight',
+      testDir: './projects/AcademyInsight/e2e',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.ACADEMYINSIGHT_URL || 'http://study.unmong.com:4020',
+      },
+      metadata: {
+        description: '학원 온라인 평판 모니터링 시스템',
+        github: 'bluevlad/AcademyInsight',
+        apiUrl: process.env.ACADEMYINSIGHT_API_URL || 'http://study.unmong.com:8082',
+      },
+    },
+
+    // ============================================
+    // NewsLetterPlatform 프로젝트
+    // ============================================
+    {
+      name: 'newsletterplatform',
+      testDir: './projects/NewsLetterPlatform/e2e',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.NEWSLETTERPLATFORM_URL || 'http://www.unmong.com:4055',
+      },
+      metadata: {
+        description: '멀티테넌트 뉴스레터 통합 플랫폼',
+        github: 'bluevlad/NewsLetterPlatform',
+      },
+    },
+
+    // ============================================
+    // unmong-main 프로젝트
+    // ============================================
+    {
+      name: 'unmong-main',
+      testDir: './projects/unmong-main/e2e',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.UNMONG_MAIN_URL || 'http://www.unmong.com',
+      },
+      metadata: {
+        description: '운몽시스템즈 통합 서비스 포털',
+        github: 'bluevlad/unmong-main',
+      },
+    },
   ],
 });

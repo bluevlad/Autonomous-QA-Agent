@@ -6,6 +6,13 @@
   "scripts": {
     "test:all": "playwright test",
     "test:hopenvision": "playwright test --project=hopenvision",
+    "test:teacherhub": "playwright test --project=teacherhub",
+    "test:healthpulse": "playwright test --project=healthpulse",
+    "test:allergyinsight": "playwright test --project=allergyinsight",
+    "test:allergynewsletter": "playwright test --project=allergynewsletter",
+    "test:academyinsight": "playwright test --project=academyinsight",
+    "test:newsletterplatform": "playwright test --project=newsletterplatform",
+    "test:unmong-main": "playwright test --project=unmong-main",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:report": "playwright show-report",
