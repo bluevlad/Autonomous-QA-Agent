@@ -55,20 +55,67 @@ export default defineConfig({
     },
 
     // ============================================
-    // 새 프로젝트 추가 시 여기에 추가
+    // TeacherHub 프로젝트
     // ============================================
-    // {
-    //   name: 'new-project',
-    //   testDir: './projects/new-project/e2e',
-    //   use: {
-    //     ...devices['Desktop Chrome'],
-    //     baseURL: process.env.NEW_PROJECT_URL || 'http://localhost:3000',
-    //   },
-    //   metadata: {
-    //     description: '프로젝트 설명',
-    //     github: 'owner/repo',
-    //     apiUrl: process.env.NEW_PROJECT_API_URL || 'http://localhost:8080',
-    //   },
-    // },
+    {
+      name: 'teacherhub',
+      testDir: './projects/TeacherHub/e2e',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.TEACHERHUB_URL || 'http://study.unmong.com:4010',
+      },
+      metadata: {
+        description: '공무원 학원 강사 선호도 조사',
+        github: 'bluevlad/TeacherHub',
+      },
+    },
+
+    // ============================================
+    // HealthPulse 프로젝트
+    // ============================================
+    {
+      name: 'healthpulse',
+      testDir: './projects/HealthPulse/e2e',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.HEALTHPULSE_URL || 'http://study.unmong.com:4030',
+      },
+      metadata: {
+        description: '헬스케어 뉴스레터 서비스',
+        github: 'bluevlad/HealthPulse',
+      },
+    },
+
+    // ============================================
+    // AllergyInsight 프로젝트
+    // ============================================
+    {
+      name: 'allergyinsight',
+      testDir: './projects/AllergyInsight/e2e',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.ALLERGYINSIGHT_URL || 'http://www.unmong.com:4040',
+      },
+      metadata: {
+        description: '알러지 논문 검색 시스템',
+        github: 'bluevlad/AllergyInsight',
+      },
+    },
+
+    // ============================================
+    // AllergyNewsLetter 프로젝트
+    // ============================================
+    {
+      name: 'allergynewsletter',
+      testDir: './projects/AllergyNewsLetter/e2e',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.ALLERGYNEWSLETTER_URL || 'http://www.unmong.com:4050',
+      },
+      metadata: {
+        description: '알러지 뉴스 브리핑 서비스',
+        github: 'bluevlad/AllergyNewsLetter',
+      },
+    },
   ],
 });

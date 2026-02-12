@@ -1,0 +1,123 @@
+# GitHub Actions E2E 테스트 워크플로우 템플릿
+#
+# 사용법:
+# 1. 이 파일을 프로젝트의 .github/workflows/e2e-test.yml로 복사
+# 2. 환경 변수 및 설정을 프로젝트에 맞게 수정
+
+name: E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  # 수동 실행
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Base URL for testing'
+        required: false
+        default: ''
+
+# 동시 실행 제한
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # 기본 환경 변수 (필요시 수정)
+  NODE_VERSION: '20'
+  BASE_URL: ${{ github.event.inputs.base_url || vars.BASE_URL || 'http://localhost:3000' }}
+
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # 선택: 로컬 서버 시작 (필요시 주석 해제)
+      # - name: Start application
+      #   run: npm run start &
+      #   env:
+      #     NODE_ENV: test
+
+      # - name: Wait for application
+      #   run: npx wait-on ${{ env.BASE_URL }} --timeout 60000
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          BASE_URL: ${{ env.BASE_URL }}
+          CI: true
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: e2e/playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ github.run_id }}
+          path: e2e/test-results/
+          retention-days: 7
+
+  # 테스트 결과 요약 코멘트 (PR에서만)
+  comment-results:
+    needs: e2e-test
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results-${{ github.run_id }}
+          path: ./results
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('./results/test-results.json', 'utf8'));
+
+            const passed = results.suites.reduce((acc, s) => acc + s.specs.filter(sp => sp.ok).length, 0);
+            const failed = results.suites.reduce((acc, s) => acc + s.specs.filter(sp => !sp.ok).length, 0);
+            const total = passed + failed;
+
+            const emoji = failed === 0 ? '✅' : '⚠️';
+            const body = `## ${emoji} E2E Test Results
+
+            | Total | Passed | Failed |
+            |-------|--------|--------|
+            | ${total} | ${passed} | ${failed} |
+
+            [View full report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });

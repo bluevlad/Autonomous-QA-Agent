@@ -15,7 +15,15 @@
       "Bash(git push:*)",
       "Bash(npm install)",
       "Bash(npx playwright install:*)",
-      "Bash(npx playwright test:*)"
+      "Bash(npx playwright test:*)",
+      "Bash(git commit:*)",
+      "Bash(findstr:*)",
+      "Bash(dir \"C:\\\\GIT\")",
+      "Bash(dir \"C:\\\\GIT\\\\TeacherHub\")",
+      "Bash(dir \"C:\\\\GIT\\\\TeacherHub\\\\frontend\")",
+      "Bash(dir /B /S \"C:\\\\GIT\\\\Autonomous-QA-Agent\")",
+      "Bash(ls:*)",
+      "Bash(dir \"C:\\\\GIT\\\\Autonomous-QA-Agent\\\\projects\")"
     ]
   }
 }
