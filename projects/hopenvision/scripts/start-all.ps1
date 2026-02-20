@@ -33,5 +33,5 @@ Write-Host "접속 URL:" -ForegroundColor Cyan
 Write-Host "  Frontend : http://localhost:5173" -ForegroundColor White
 Write-Host "  Backend  : http://localhost:8080" -ForegroundColor White
 Write-Host "  Swagger  : http://localhost:8080/swagger-ui.html" -ForegroundColor White
-Write-Host "  Database : localhost:5432 (hopenvision/***REMOVED***)" -ForegroundColor White
+Write-Host "  Database : localhost:5432 (환경변수 참조)" -ForegroundColor White
 Write-Host ""

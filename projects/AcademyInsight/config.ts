@@ -15,8 +15,8 @@ export const config = {
 
   // 테스트 대상 URL
   urls: {
-    frontend: process.env.ACADEMYINSIGHT_URL || 'http://study.unmong.com:4020',
-    backend: process.env.ACADEMYINSIGHT_API_URL || 'http://study.unmong.com:8082',
+    frontend: process.env.ACADEMYINSIGHT_URL || 'http://localhost:4020',
+    backend: process.env.ACADEMYINSIGHT_API_URL || 'http://localhost:8082',
   },
 
   // API 엔드포인트

@@ -62,11 +62,11 @@
 
 | 프로젝트 | 서비스 URL | GitHub Repository |
 |----------|------------|-------------------|
-| HopenVision | http://study.unmong.com:4060 | [bluevlad/hopenvision](https://github.com/bluevlad/hopenvision) |
-| TeacherHub | http://study.unmong.com:4010 | [bluevlad/TeacherHub](https://github.com/bluevlad/TeacherHub) |
-| HealthPulse | http://study.unmong.com:4030 | [bluevlad/HealthPulse](https://github.com/bluevlad/HealthPulse) |
-| AllergyInsight | http://www.unmong.com:4040 | [bluevlad/AllergyInsight](https://github.com/bluevlad/AllergyInsight) |
-| AllergyNewsLetter | http://www.unmong.com:4050 | [bluevlad/AllergyNewsLetter](https://github.com/bluevlad/AllergyNewsLetter) |
+| HopenVision | http://localhost:4060 | [bluevlad/hopenvision](https://github.com/bluevlad/hopenvision) |
+| TeacherHub | http://localhost:4010 | [bluevlad/TeacherHub](https://github.com/bluevlad/TeacherHub) |
+| HealthPulse | http://localhost:4030 | [bluevlad/HealthPulse](https://github.com/bluevlad/HealthPulse) |
+| AllergyInsight | http://localhost:4040 | [bluevlad/AllergyInsight](https://github.com/bluevlad/AllergyInsight) |
+| AllergyNewsLetter | http://localhost:4050 | [bluevlad/AllergyNewsLetter](https://github.com/bluevlad/AllergyNewsLetter) |
 
 ## 테스트 실행 방법
 

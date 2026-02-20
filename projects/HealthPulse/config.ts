@@ -15,7 +15,7 @@ export const config = {
 
   // 테스트 대상 URL
   urls: {
-    base: process.env.HEALTHPULSE_URL || 'http://study.unmong.com:4030',
+    base: process.env.HEALTHPULSE_URL || 'http://localhost:4030',
   },
 
   // API 엔드포인트

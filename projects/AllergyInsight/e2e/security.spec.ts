@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 
-const API_URL = process.env.ALLERGYINSIGHT_API_URL || 'http://www.unmong.com:9040';
+const API_URL = process.env.ALLERGYINSIGHT_API_URL || 'http://localhost:9040';
 
 test.describe('AllergyInsight 보안 패치 검증 (#17 자격증명/CORS/JWT)', () => {
   let request: APIRequestContext;
@@ -42,9 +42,11 @@ test.describe('AllergyInsight 보안 패치 검증 (#17 자격증명/CORS/JWT)',
     const response = await request.get('/api/health');
     const body = await response.text();
 
-    expect(body).not.toContain('***REMOVED***');
-    expect(body).not.toContain('***REMOVED***');
-    expect(body).not.toContain('***REMOVED***');
+    // 민감 정보 노출 검증 - 실제 비밀번호는 환경변수에서 참조
+    const sensitivePatterns = (process.env.SENSITIVE_PATTERNS || '').split(',').filter(Boolean);
+    for (const pattern of sensitivePatterns) {
+      expect(body).not.toContain(pattern);
+    }
   });
 
   test('Health check 엔드포인트 정상 동작', async () => {

@@ -6,8 +6,8 @@
 |------|------|
 | **서비스명** | AllergyNewsLetter |
 | **설명** | 알러지 뉴스 브리핑 서비스 |
-| **URL** | http://www.unmong.com:4050 |
-| **API Docs** | http://www.unmong.com:4050/docs |
+| **URL** | http://localhost:4050 |
+| **API Docs** | http://localhost:4050/docs |
 | **GitHub** | [bluevlad/AllergyNewsLetter](https://github.com/bluevlad/AllergyNewsLetter) |
 
 ## 테스트 현황

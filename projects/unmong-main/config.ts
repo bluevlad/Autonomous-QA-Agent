@@ -15,17 +15,17 @@ export const config = {
 
   // 테스트 대상 URL
   urls: {
-    base: process.env.UNMONG_MAIN_URL || 'http://www.unmong.com',
+    base: process.env.UNMONG_MAIN_URL || 'http://localhost:80',
   },
 
-  // 서비스 링크 검증 대상
+  // 서비스 링크 검증 대상 (환경변수로 설정)
   serviceLinks: {
-    academyInsight: 'http://study.unmong.com:4020',
-    teacherHub: 'http://study.unmong.com:4010',
-    healthPulse: 'http://study.unmong.com:4030',
-    allergyInsight: 'http://www.unmong.com:4040',
-    hopenvision: 'http://study.unmong.com:4060',
-    newsletterPlatform: 'http://www.unmong.com:4055',
+    academyInsight: process.env.ACADEMYINSIGHT_URL || 'http://localhost:4020',
+    teacherHub: process.env.TEACHERHUB_URL || 'http://localhost:4010',
+    healthPulse: process.env.HEALTHPULSE_URL || 'http://localhost:4030',
+    allergyInsight: process.env.ALLERGYINSIGHT_URL || 'http://localhost:4040',
+    hopenvision: process.env.HOPENVISION_URL || 'http://localhost:4060',
+    newsletterPlatform: process.env.NEWSLETTERPLATFORM_URL || 'http://localhost:4055',
   },
 };
 

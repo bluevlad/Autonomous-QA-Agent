@@ -8,9 +8,9 @@
 |------|------|
 | 프로젝트명 | HopenVision |
 | 설명 | 공무원 시험 채점 시스템 |
-| Frontend URL | http://study.unmong.com:4060 |
-| Backend API | http://study.unmong.com:9050 |
-| Swagger UI | http://study.unmong.com:9050/swagger-ui.html |
+| Frontend URL | http://localhost:4060 |
+| Backend API | http://localhost:9050 |
+| Swagger UI | http://localhost:9050/swagger-ui.html |
 | GitHub | [bluevlad/hopenvision](https://github.com/bluevlad/hopenvision) |
 
 ## 테스트 범위

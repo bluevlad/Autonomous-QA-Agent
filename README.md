@@ -42,7 +42,7 @@ Autonomous-QA-Agent/
 
 | 프로젝트 | 설명 | 테스트 URL | GitHub |
 |----------|------|------------|--------|
-| [hopenvision](./projects/hopenvision/) | 공무원 시험 채점 시스템 | http://study.unmong.com:4060 | [bluevlad/hopenvision](https://github.com/bluevlad/hopenvision) |
+| [hopenvision](./projects/hopenvision/) | 공무원 시험 채점 시스템 | http://localhost:4060 | [bluevlad/hopenvision](https://github.com/bluevlad/hopenvision) |
 
 ## 시작하기
 

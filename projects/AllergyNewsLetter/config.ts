@@ -15,7 +15,7 @@ export const config = {
 
   // 테스트 대상 URL
   urls: {
-    base: process.env.ALLERGYNEWSLETTER_URL || 'http://www.unmong.com:4050',
+    base: process.env.ALLERGYNEWSLETTER_URL || 'http://localhost:4050',
   },
 
   // API 엔드포인트

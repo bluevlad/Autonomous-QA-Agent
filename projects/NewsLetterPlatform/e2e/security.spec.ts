@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 
-const BASE_URL = process.env.NEWSLETTERPLATFORM_URL || 'http://www.unmong.com:4055';
+const BASE_URL = process.env.NEWSLETTERPLATFORM_URL || 'http://localhost:4055';
 
 test.describe('NewsLetterPlatform 보안 패치 검증 (#1 이메일 인젝션/토큰)', () => {
   let request: APIRequestContext;

@@ -2,10 +2,10 @@ import { test, expect, APIRequestContext } from '@playwright/test';
 
 /**
  * TeacherHub API 테스트
- * API 서버: http://study.unmong.com:8081/
+ * API 서버: http://localhost:8081/
  */
 
-const API_URL = 'http://study.unmong.com:8081';
+const API_URL = process.env.TEACHERHUB_API_URL || 'http://localhost:8081';
 
 test.describe('학원(Academy) API', () => {
   let request: APIRequestContext;

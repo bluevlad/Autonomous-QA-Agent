@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 
-const API_URL = process.env.TEACHERHUB_API_URL || 'http://study.unmong.com:8081';
+const API_URL = process.env.TEACHERHUB_API_URL || 'http://localhost:8081';
 
 test.describe('TeacherHub 보안 패치 검증 (#9 자격증명/CORS)', () => {
   let request: APIRequestContext;

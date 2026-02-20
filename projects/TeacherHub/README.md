@@ -6,8 +6,8 @@
 |------|------|
 | **서비스명** | TeacherHub |
 | **설명** | 공무원 학원 강사 선호도 조사 |
-| **URL** | http://study.unmong.com:4010 |
-| **API URL** | http://study.unmong.com:8081 |
+| **URL** | http://localhost:4010 |
+| **API URL** | http://localhost:8081 |
 | **GitHub** | [bluevlad/TeacherHub](https://github.com/bluevlad/TeacherHub) |
 
 ## 테스트 현황

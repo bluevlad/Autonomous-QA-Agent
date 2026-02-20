@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const API_BASE = process.env.NEWSLETTERPLATFORM_URL || 'http://www.unmong.com:4055';
+const API_BASE = process.env.NEWSLETTERPLATFORM_URL || 'http://localhost:4055';
 
 /**
  * NewsLetterPlatform - API 테스트

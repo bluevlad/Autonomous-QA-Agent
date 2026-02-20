@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = process.env.HEALTHPULSE_URL || 'http://study.unmong.com:4030';
+const BASE_URL = process.env.HEALTHPULSE_URL || 'http://localhost:4030';
 
 test.describe('HealthPulse API 테스트', () => {
   test.describe('Health Check API', () => {

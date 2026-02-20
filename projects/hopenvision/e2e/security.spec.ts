@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 
-const API_URL = process.env.HOPENVISION_API_URL || 'http://study.unmong.com:9050';
+const API_URL = process.env.HOPENVISION_API_URL || 'http://localhost:9050';
 
 test.describe('hopenvision 보안 패치 검증 (#12 Path Traversal)', () => {
   let request: APIRequestContext;

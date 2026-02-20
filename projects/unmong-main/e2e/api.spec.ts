@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = process.env.UNMONG_MAIN_URL || 'http://www.unmong.com';
+const BASE_URL = process.env.UNMONG_MAIN_URL || 'http://localhost:80';
 
 /**
  * unmong-main - 게이트웨이 및 서비스 연결 테스트
@@ -20,11 +20,11 @@ test.describe('unmong-main 서비스 가용성', () => {
 
 test.describe('unmong-main 하위 서비스 연결 확인', () => {
   const services = [
-    { name: 'TeacherHub', url: 'http://study.unmong.com:4010' },
-    { name: 'AcademyInsight', url: 'http://study.unmong.com:4020' },
-    { name: 'HealthPulse', url: 'http://study.unmong.com:4030' },
-    { name: 'AllergyInsight', url: 'http://www.unmong.com:4040' },
-    { name: 'HopenVision', url: 'http://study.unmong.com:4060' },
+    { name: 'TeacherHub', url: process.env.TEACHERHUB_URL || 'http://localhost:4010' },
+    { name: 'AcademyInsight', url: process.env.ACADEMYINSIGHT_URL || 'http://localhost:4020' },
+    { name: 'HealthPulse', url: process.env.HEALTHPULSE_URL || 'http://localhost:4030' },
+    { name: 'AllergyInsight', url: process.env.ALLERGYINSIGHT_URL || 'http://localhost:4040' },
+    { name: 'HopenVision', url: process.env.HOPENVISION_URL || 'http://localhost:4060' },
   ];
 
   for (const service of services) {

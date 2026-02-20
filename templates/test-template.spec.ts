@@ -18,7 +18,7 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 // 테스트 데이터
 const testData = {
   validEmail: 'test@example.com',
-  validPassword: 'password123',
+  validPassword: process.env.TEST_PASSWORD || 'test-only-placeholder',
   invalidEmail: 'invalid-email',
 };
 

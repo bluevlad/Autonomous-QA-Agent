@@ -15,8 +15,8 @@ export const config = {
 
   // 테스트 대상 URL
   urls: {
-    frontend: process.env.TEACHERHUB_URL || 'http://study.unmong.com:4010',
-    backend: process.env.TEACHERHUB_API_URL || 'http://study.unmong.com:8081',
+    frontend: process.env.TEACHERHUB_URL || 'http://localhost:4010',
+    backend: process.env.TEACHERHUB_API_URL || 'http://localhost:8081',
   },
 
   // API 엔드포인트

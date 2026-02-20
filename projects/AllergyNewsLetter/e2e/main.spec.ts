@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://www.unmong.com:4050';
+const BASE_URL = process.env.ALLERGYNEWSLETTER_URL || 'http://localhost:4050';
 
 test.describe('AllergyNewsLetter - 메인 페이지', () => {
   test.beforeEach(async ({ page }) => {

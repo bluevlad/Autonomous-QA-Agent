@@ -2,10 +2,10 @@ import { test, expect } from '@playwright/test';
 
 /**
  * AllergyInsight - 알러지 논문 검색 시스템 E2E 테스트
- * 테스트 대상: http://www.unmong.com:4040/
+ * 테스트 대상: http://localhost:4040/
  */
 
-const BASE_URL = 'http://www.unmong.com:4040';
+const BASE_URL = process.env.ALLERGYINSIGHT_URL || 'http://localhost:4040';
 
 test.describe('AllergyInsight 메인 페이지 테스트', () => {
   test.beforeEach(async ({ page }) => {

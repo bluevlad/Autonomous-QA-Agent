@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 
-const BASE_URL = process.env.UNMONG_MAIN_URL || 'http://www.unmong.com';
+const BASE_URL = process.env.UNMONG_MAIN_URL || 'http://localhost:80';
 
 test.describe('unmong-main 보안 패치 검증 (#12 SSL 비밀번호)', () => {
   let request: APIRequestContext;

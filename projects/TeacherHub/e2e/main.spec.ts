@@ -2,12 +2,12 @@ import { test, expect } from '@playwright/test';
 
 /**
  * TeacherHub E2E 테스트
- * 웹사이트: http://study.unmong.com:4010/
- * API 서버: http://study.unmong.com:8081/
+ * 웹사이트: http://localhost:4010/
+ * API 서버: http://localhost:8081/
  */
 
-const BASE_URL = 'http://study.unmong.com:4010';
-const API_URL = 'http://study.unmong.com:8081';
+const BASE_URL = process.env.TEACHERHUB_URL || 'http://localhost:4010';
+const API_URL = process.env.TEACHERHUB_API_URL || 'http://localhost:8081';
 
 test.describe('TeacherHub 대시보드', () => {
   test.beforeEach(async ({ page }) => {

@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: process.env.HEALTHPULSE_URL || 'http://study.unmong.com:4030',
+    baseURL: process.env.HEALTHPULSE_URL || 'http://localhost:4030',
     trace: 'on-first-retry',
   },
   projects: [

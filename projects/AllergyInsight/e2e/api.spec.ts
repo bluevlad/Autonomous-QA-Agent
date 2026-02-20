@@ -2,10 +2,10 @@ import { test, expect } from '@playwright/test';
 
 /**
  * AllergyInsight API 테스트
- * 테스트 대상: http://www.unmong.com:4040/api
+ * 테스트 대상: http://localhost:4040/api
  */
 
-const API_BASE_URL = 'http://www.unmong.com:4040/api';
+const API_BASE_URL = (process.env.ALLERGYINSIGHT_URL || 'http://localhost:4040') + '/api';
 
 test.describe('Health Check API 테스트', () => {
   test('GET /api/health - 서버 상태 확인', async ({ request }) => {

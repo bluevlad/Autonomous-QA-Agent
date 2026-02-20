@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const API_BASE = process.env.ACADEMYINSIGHT_API_URL || 'http://study.unmong.com:8082';
+const API_BASE = process.env.ACADEMYINSIGHT_API_URL || 'http://localhost:8082';
 
 /**
  * AcademyInsight - API 테스트

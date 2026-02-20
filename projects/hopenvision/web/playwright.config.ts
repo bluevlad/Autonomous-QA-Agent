@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: process.env.BASE_URL || 'http://study.unmong.com:4060',
+    baseURL: process.env.HOPENVISION_URL || 'http://localhost:4060',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },

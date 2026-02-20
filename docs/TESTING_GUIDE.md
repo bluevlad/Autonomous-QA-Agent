@@ -150,8 +150,8 @@ test('폼 제출', async ({ page }) => {
 
 ```bash
 # .env 파일
-HOPENVISION_URL=http://study.unmong.com:4060
-HOPENVISION_API_URL=http://study.unmong.com:9050
+HOPENVISION_URL=http://localhost:4060
+HOPENVISION_API_URL=http://localhost:9050
 ```
 
 ## 문제 해결

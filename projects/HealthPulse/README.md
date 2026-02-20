@@ -6,8 +6,8 @@
 |------|------|
 | **서비스명** | HealthPulse |
 | **설명** | 헬스케어 뉴스레터 서비스 |
-| **URL** | http://study.unmong.com:4030 |
-| **API Docs** | http://study.unmong.com:4030/docs |
+| **URL** | http://localhost:4030 |
+| **API Docs** | http://localhost:4030/docs |
 | **GitHub** | [bluevlad/HealthPulse](https://github.com/bluevlad/HealthPulse) |
 
 ## 테스트 현황

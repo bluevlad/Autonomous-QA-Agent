@@ -68,7 +68,7 @@ gh issue create --repo bluevlad/hopenvision --title "[Bug] 제목" --body "내�
 
 | 프로젝트 | 설명 | URL | GitHub |
 |----------|------|-----|--------|
-| hopenvision | 공무원 시험 채점 시스템 | http://study.unmong.com:4060 | bluevlad/hopenvision |
+| hopenvision | 공무원 시험 채점 시스템 | http://localhost:4060 | bluevlad/hopenvision |
 
 ## Adding New Projects
 

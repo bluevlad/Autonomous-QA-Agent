@@ -6,8 +6,8 @@
 |------|------|
 | **서비스명** | AllergyInsight |
 | **설명** | 알러지 논문 검색 시스템 |
-| **URL** | http://www.unmong.com:4040 |
-| **API URL** | http://www.unmong.com:4040/api |
+| **URL** | http://localhost:4040 |
+| **API URL** | http://localhost:4040/api |
 | **GitHub** | [bluevlad/AllergyInsight](https://github.com/bluevlad/AllergyInsight) |
 
 ## 테스트 현황

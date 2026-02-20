@@ -15,9 +15,9 @@ export const config = {
 
   // 테스트 대상 URL
   urls: {
-    frontend: process.env.HOPENVISION_URL || 'http://study.unmong.com:4060',
-    backend: process.env.HOPENVISION_API_URL || 'http://study.unmong.com:9050',
-    swagger: 'http://study.unmong.com:9050/swagger-ui.html',
+    frontend: process.env.HOPENVISION_URL || 'http://localhost:4060',
+    backend: process.env.HOPENVISION_API_URL || 'http://localhost:9050',
+    swagger: process.env.HOPENVISION_API_URL ? `${process.env.HOPENVISION_API_URL}/swagger-ui.html` : 'http://localhost:9050/swagger-ui.html',
   },
 
   // 테스트 데이터

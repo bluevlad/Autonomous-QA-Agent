@@ -1,6 +1,6 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 
-const BASE_URL = 'http://www.unmong.com:4050';
+const BASE_URL = process.env.ALLERGYNEWSLETTER_URL || 'http://localhost:4050';
 
 test.describe('AllergyNewsLetter API - OpenAPI 스펙', () => {
   test('OpenAPI 스펙이 정상적으로 반환되어야 한다', async ({ request }) => {

@@ -572,7 +572,7 @@ describe('ExamList', () => {
 # 개발 환경
 DB_URL=jdbc:postgresql://localhost:5432/hopenvision
 DB_USERNAME=hopenvision
-DB_PASSWORD=***REMOVED***
+DB_PASSWORD=<YOUR_DB_PASSWORD>
 ```
 
 #### Frontend (.env)

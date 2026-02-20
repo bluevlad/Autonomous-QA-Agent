@@ -34,7 +34,7 @@ async function getAuthToken(request: APIRequestContext): Promise<string> {
   const response = await request.post(`${API_BASE_URL}/auth/login`, {
     data: {
       email: 'test@example.com',
-      password: 'password123',
+      password: process.env.TEST_PASSWORD || 'test-only-placeholder',
     },
   });
   const data = await response.json();

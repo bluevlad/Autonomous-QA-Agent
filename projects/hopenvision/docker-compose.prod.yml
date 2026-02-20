@@ -10,7 +10,7 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/hopenvision
       DB_USERNAME: ${DB_USER:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:-***REMOVED***}
+      DB_PASSWORD: ${DB_PASSWORD}
       CORS_ALLOWED_ORIGINS: http://localhost:4060
       TZ: Asia/Seoul
     ports:

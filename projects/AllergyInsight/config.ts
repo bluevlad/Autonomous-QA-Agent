@@ -15,8 +15,8 @@ export const config = {
 
   // 테스트 대상 URL
   urls: {
-    frontend: process.env.ALLERGYINSIGHT_URL || 'http://www.unmong.com:4040',
-    backend: process.env.ALLERGYINSIGHT_API_URL || 'http://www.unmong.com:9040',
+    frontend: process.env.ALLERGYINSIGHT_URL || 'http://localhost:4040',
+    backend: process.env.ALLERGYINSIGHT_API_URL || 'http://localhost:9040',
   },
 
   // API 엔드포인트

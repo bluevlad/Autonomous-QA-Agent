@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const API_BASE_URL = process.env.API_URL || 'http://study.unmong.com:9050';
+const API_BASE_URL = process.env.HOPENVISION_API_URL || 'http://localhost:9050';
 
 test.describe('API 엔드포인트 테스트', () => {
   test('GET /api/exams - 시험 목록 조회가 성공해야 함', async ({ request }) => {

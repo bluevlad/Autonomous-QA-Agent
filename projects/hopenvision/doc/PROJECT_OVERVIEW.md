@@ -65,7 +65,7 @@
                           │ HTTPS
 ┌─────────────────────────▼───────────────────────────────────┐
 │                     Nginx (Reverse Proxy)                    │
-│                    :80 / :443 (unmong.com)                   │
+│                    :80 / :443 (localhost)                     │
 └──────────┬──────────────────────────────────┬───────────────┘
            │                                  │
 ┌──────────▼──────────┐          ┌───────────▼───────────────┐
@@ -200,16 +200,16 @@ hopenvision/
 
 ### 7.1 개발 환경 (Development)
 - **OS**: Windows 11
-- **IP**: ***REMOVED_IP***
+- **IP**: (환경별 설정 참조)
 - **Container**: Docker Desktop
 - **IDE**: VS Code / IntelliJ IDEA
 - **Profile**: `local` 또는 `dev`
 
 ### 7.2 운영 환경 (Production)
 - **OS**: macOS (또는 Linux)
-- **IP**: ***REMOVED_IP***
+- **IP**: (환경별 설정 참조)
 - **Container**: OrbStack / Docker
-- **Domain**: unmong.com (예정)
+- **Domain**: (환경별 설정 참조)
 - **Profile**: `prod`
 
 ---

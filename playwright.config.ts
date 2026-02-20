@@ -45,12 +45,12 @@ export default defineConfig({
       testDir: './projects/hopenvision/e2e',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: process.env.HOPENVISION_URL || 'http://study.unmong.com:4060',
+        baseURL: process.env.HOPENVISION_URL || 'http://localhost:4060',
       },
       metadata: {
         description: '공무원 시험 채점 시스템',
         github: 'bluevlad/hopenvision',
-        apiUrl: process.env.HOPENVISION_API_URL || 'http://study.unmong.com:9050',
+        apiUrl: process.env.HOPENVISION_API_URL || 'http://localhost:9050',
       },
     },
 
@@ -62,7 +62,7 @@ export default defineConfig({
       testDir: './projects/TeacherHub/e2e',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: process.env.TEACHERHUB_URL || 'http://study.unmong.com:4010',
+        baseURL: process.env.TEACHERHUB_URL || 'http://localhost:4010',
       },
       metadata: {
         description: '공무원 학원 강사 선호도 조사',
@@ -78,7 +78,7 @@ export default defineConfig({
       testDir: './projects/HealthPulse/e2e',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: process.env.HEALTHPULSE_URL || 'http://study.unmong.com:4030',
+        baseURL: process.env.HEALTHPULSE_URL || 'http://localhost:4030',
       },
       metadata: {
         description: '헬스케어 뉴스레터 서비스',
@@ -94,7 +94,7 @@ export default defineConfig({
       testDir: './projects/AllergyInsight/e2e',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: process.env.ALLERGYINSIGHT_URL || 'http://www.unmong.com:4040',
+        baseURL: process.env.ALLERGYINSIGHT_URL || 'http://localhost:4040',
       },
       metadata: {
         description: '알러지 논문 검색 시스템',
@@ -110,7 +110,7 @@ export default defineConfig({
       testDir: './projects/AllergyNewsLetter/e2e',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: process.env.ALLERGYNEWSLETTER_URL || 'http://www.unmong.com:4050',
+        baseURL: process.env.ALLERGYNEWSLETTER_URL || 'http://localhost:4050',
       },
       metadata: {
         description: '알러지 뉴스 브리핑 서비스',
@@ -126,12 +126,12 @@ export default defineConfig({
       testDir: './projects/AcademyInsight/e2e',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: process.env.ACADEMYINSIGHT_URL || 'http://study.unmong.com:4020',
+        baseURL: process.env.ACADEMYINSIGHT_URL || 'http://localhost:4020',
       },
       metadata: {
         description: '학원 온라인 평판 모니터링 시스템',
         github: 'bluevlad/AcademyInsight',
-        apiUrl: process.env.ACADEMYINSIGHT_API_URL || 'http://study.unmong.com:8082',
+        apiUrl: process.env.ACADEMYINSIGHT_API_URL || 'http://localhost:8082',
       },
     },
 
@@ -143,7 +143,7 @@ export default defineConfig({
       testDir: './projects/NewsLetterPlatform/e2e',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: process.env.NEWSLETTERPLATFORM_URL || 'http://www.unmong.com:4055',
+        baseURL: process.env.NEWSLETTERPLATFORM_URL || 'http://localhost:4055',
       },
       metadata: {
         description: '멀티테넌트 뉴스레터 통합 플랫폼',
@@ -159,7 +159,7 @@ export default defineConfig({
       testDir: './projects/unmong-main/e2e',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: process.env.UNMONG_MAIN_URL || 'http://www.unmong.com',
+        baseURL: process.env.UNMONG_MAIN_URL || 'http://localhost:80',
       },
       metadata: {
         description: '운몽시스템즈 통합 서비스 포털',
