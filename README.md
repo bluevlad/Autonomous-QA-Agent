@@ -92,9 +92,10 @@ npm run test:ui
 
 1. **테스트 실행**: 자동화된 테스트 또는 수동 탐색적 테스트
 2. **이슈 발견**: 버그 또는 개선사항 발견
-3. **이슈 기록**: `projects/[name]/issues/` 폴더에 마크다운으로 기록
-4. **GitHub 등록**: `gh` CLI를 통해 해당 프로젝트의 GitHub Issues에 등록
-5. **추적**: 이슈 번호와 함께 테스트 케이스 업데이트
+3. **GitHub 등록**: `gh` CLI를 통해 해당 프로젝트의 GitHub Issues에 등록
+4. **추적**: 이슈 번호와 함께 테스트 케이스 업데이트
+
+> 이슈 기록 상세는 Private 저장소(Claude-Opus-bluevlad)에서 관리됩니다.
 
 ## 라이선스
 
