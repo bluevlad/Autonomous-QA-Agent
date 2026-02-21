@@ -18,7 +18,9 @@
     "test:headed": "playwright test --headed",
     "test:report": "playwright show-report",
     "issues:create": "node scripts/create-issues.js",
-    "project:add": "node scripts/add-project.js"
+    "project:add": "node scripts/add-project.js",
+    "scheduler:start": "tsx scheduler/index.ts",
+    "scheduler:run": "tsx scheduler/index.ts --run"
   },
   "keywords": [
     "qa",
@@ -34,6 +36,9 @@
     "@types/node": "^22.0.0",
     "dotenv": "^17.3.1",
     "playwright-slack-report": "^1.1.109",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.0",
+    "node-cron": "^3.0.3",
+    "@types/node-cron": "^3.0.11",
+    "tsx": "^4.19.0"
   }
 }

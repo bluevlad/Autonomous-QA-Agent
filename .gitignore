@@ -38,6 +38,9 @@ projects/*/.claude/settings.local.json
 **/reports/*.html
 **/reports/*.json
 
+# Scheduler logs
+scheduler/logs/
+
 # Temporary files
 *.tmp
 *.temp
