@@ -32,6 +32,7 @@
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.0.0",
+    "dotenv": "^17.3.1",
     "playwright-slack-report": "^1.1.109",
     "typescript": "^5.9.0"
   }

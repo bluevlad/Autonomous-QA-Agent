@@ -1,4 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 /**
  * Autonomous QA Agent - 통합 Playwright 설정
@@ -34,7 +37,6 @@ export default defineConfig({
             {
               slackWebHookUrl: process.env.SLACK_WEBHOOK_URL,
               sendResults: 'always',
-              showInThread: true,
               maxNumberOfFailuresToShow: 10,
               meta: [
                 {
