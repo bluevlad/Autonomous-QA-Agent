@@ -8,10 +8,11 @@
 
 ### 주요 기능
 
-- **통합 테스트 관리**: 여러 프로젝트의 E2E/API 테스트를 한 곳에서 관리
+- **통합 테스트 관리**: 9개 프로젝트의 E2E/API/보안 테스트를 한 곳에서 관리
 - **자동화된 테스트**: Playwright 기반 E2E 테스트 자동화
 - **이슈 자동 등록**: 발견된 버그/개선사항을 해당 프로젝트의 GitHub Issues에 자동 등록
 - **테스트 리포트**: 프로젝트별 테스트 결과 리포트 생성
+- **Slack 알림**: 테스트 결과를 Slack 채널에 자동 전송 (프로젝트별 요약 + 실패 상세)
 
 ## 프로젝트 구조
 
@@ -43,6 +44,14 @@ Autonomous-QA-Agent/
 | 프로젝트 | 설명 | 테스트 URL | GitHub |
 |----------|------|------------|--------|
 | [hopenvision](./projects/hopenvision/) | 공무원 시험 채점 시스템 | http://localhost:4060 | [bluevlad/hopenvision](https://github.com/bluevlad/hopenvision) |
+| [TeacherHub](./projects/TeacherHub/) | 강사 평판 분석 시스템 | http://localhost:4010 | [bluevlad/TeacherHub](https://github.com/bluevlad/TeacherHub) |
+| [HealthPulse](./projects/HealthPulse/) | 헬스케어 뉴스레터 서비스 | http://localhost:4030 | [bluevlad/HealthPulse](https://github.com/bluevlad/HealthPulse) |
+| [AllergyInsight](./projects/AllergyInsight/) | 알러지 논문 검색 시스템 | http://localhost:4040 | [bluevlad/AllergyInsight](https://github.com/bluevlad/AllergyInsight) |
+| [AllergyNewsLetter](./projects/AllergyNewsLetter/) | 알러지 뉴스 브리핑 서비스 | http://localhost:4050 | [bluevlad/AllergyNewsLetter](https://github.com/bluevlad/AllergyNewsLetter) |
+| [AcademyInsight](./projects/AcademyInsight/) | 학원 온라인 평판 모니터링 | http://localhost:4020 | [bluevlad/AcademyInsight](https://github.com/bluevlad/AcademyInsight) |
+| [NewsLetterPlatform](./projects/NewsLetterPlatform/) | 멀티테넌트 뉴스레터 플랫폼 | http://localhost:4055 | [bluevlad/NewsLetterPlatform](https://github.com/bluevlad/NewsLetterPlatform) |
+| [unmong-main](./projects/unmong-main/) | 운몽시스템즈 통합 포털 | http://localhost:80 | [bluevlad/unmong-main](https://github.com/bluevlad/unmong-main) |
+| [StandUp](./projects/StandUp/) | 업무보고 관리 자동화 Agent | http://localhost:9060 | [bluevlad/StandUp](https://github.com/bluevlad/StandUp) |
 
 ## 시작하기
 
@@ -66,6 +75,15 @@ npm install
 npx playwright install
 ```
 
+### 환경변수 설정
+
+```bash
+# 환경변수 파일 생성
+cp .env.example .env
+
+# .env 파일에서 SLACK_WEBHOOK_URL 설정 (선택사항)
+```
+
 ### 테스트 실행
 
 ```bash
@@ -74,10 +92,18 @@ npm run test:all
 
 # 특정 프로젝트 테스트
 npm run test:hopenvision
+npm run test:standup
 
 # UI 모드로 테스트
 npm run test:ui
 ```
+
+### Slack 알림
+
+`SLACK_WEBHOOK_URL` 환경변수가 설정되면 테스트 실행 후 자동으로 Slack 알림이 전송됩니다.
+- 프로젝트별 통과/실패 요약
+- 실패 테스트 상세 (스레드)
+- 실행 환경 메타 정보
 
 ## 새 프로젝트 추가
 

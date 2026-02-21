@@ -13,6 +13,7 @@
     "test:academyinsight": "playwright test --project=academyinsight",
     "test:newsletterplatform": "playwright test --project=newsletterplatform",
     "test:unmong-main": "playwright test --project=unmong-main",
+    "test:standup": "playwright test --project=standup",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:report": "playwright show-report",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.0.0",
+    "playwright-slack-report": "^1.1.109",
     "typescript": "^5.9.0"
   }
 }

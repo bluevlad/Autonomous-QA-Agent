@@ -26,6 +26,30 @@ export default defineConfig({
     ['list'],
     ['html', { outputFolder: 'playwright-report' }],
     ['json', { outputFile: 'test-results/results.json' }],
+    // Slack 알림 (SLACK_WEBHOOK_URL 설정 시 활성화)
+    ...(process.env.SLACK_WEBHOOK_URL
+      ? [
+          [
+            './node_modules/playwright-slack-report/dist/src/SlackReporter.js',
+            {
+              slackWebHookUrl: process.env.SLACK_WEBHOOK_URL,
+              sendResults: 'always',
+              showInThread: true,
+              maxNumberOfFailuresToShow: 10,
+              meta: [
+                {
+                  key: '환경',
+                  value: process.env.NODE_ENV || 'local',
+                },
+                {
+                  key: '대상',
+                  value: 'hopenvision, allergyinsight, teacherhub, standup 외 5개',
+                },
+              ],
+            },
+          ] as any,
+        ]
+      : []),
   ],
 
   // 공통 설정
@@ -164,6 +188,22 @@ export default defineConfig({
       metadata: {
         description: '운몽시스템즈 통합 서비스 포털',
         github: 'bluevlad/unmong-main',
+      },
+    },
+
+    // ============================================
+    // StandUp 프로젝트
+    // ============================================
+    {
+      name: 'standup',
+      testDir: './projects/StandUp/e2e',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.STANDUP_API_URL || 'http://localhost:9060',
+      },
+      metadata: {
+        description: '업무보고 관리 자동화 Agent',
+        github: 'bluevlad/StandUp',
       },
     },
   ],
