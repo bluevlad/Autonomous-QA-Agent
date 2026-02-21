@@ -29,8 +29,8 @@ export default defineConfig({
     ['list'],
     ['html', { outputFolder: 'playwright-report' }],
     ['json', { outputFile: 'test-results/results.json' }],
-    // Slack 알림 (SLACK_WEBHOOK_URL 설정 시 활성화)
-    ...(process.env.SLACK_WEBHOOK_URL
+    // Slack 알림 (SLACK_WEBHOOK_URL 설정 시 활성화, 스케줄러 모드에서는 비활성화)
+    ...(process.env.SLACK_WEBHOOK_URL && !process.env.SCHEDULER_MODE
       ? [
           [
             './node_modules/playwright-slack-report/dist/src/SlackReporter.js',
