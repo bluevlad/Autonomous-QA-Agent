@@ -21,23 +21,18 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
-      - name: Setup environment
-        run: |
-          cat > .env << 'EOF'
-          NODE_ENV=production
-          SLACK_WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }}
-          UNMONG_MAIN_URL=${{ secrets.UNMONG_MAIN_URL }}
-          HOPENVISION_URL=${{ secrets.HOPENVISION_URL }}
-          HOPENVISION_API_URL=${{ secrets.HOPENVISION_API_URL }}
-          ALLERGYINSIGHT_URL=${{ secrets.ALLERGYINSIGHT_URL }}
-          ALLERGYINSIGHT_API_URL=${{ secrets.ALLERGYINSIGHT_API_URL }}
-          NEWSLETTERPLATFORM_URL=${{ secrets.NEWSLETTERPLATFORM_URL }}
-          STANDUP_API_URL=${{ secrets.STANDUP_API_URL }}
-          EOF
-
       - name: Run QA scheduler
         env:
+          NODE_ENV: production
           GH_TOKEN: ${{ secrets.QA_PAT }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          UNMONG_MAIN_URL: ${{ secrets.UNMONG_MAIN_URL }}
+          HOPENVISION_URL: ${{ secrets.HOPENVISION_URL }}
+          HOPENVISION_API_URL: ${{ secrets.HOPENVISION_API_URL }}
+          ALLERGYINSIGHT_URL: ${{ secrets.ALLERGYINSIGHT_URL }}
+          ALLERGYINSIGHT_API_URL: ${{ secrets.ALLERGYINSIGHT_API_URL }}
+          NEWSLETTERPLATFORM_URL: ${{ secrets.NEWSLETTERPLATFORM_URL }}
+          STANDUP_API_URL: ${{ secrets.STANDUP_API_URL }}
         run: npm run scheduler:run
 
       - name: Upload logs
