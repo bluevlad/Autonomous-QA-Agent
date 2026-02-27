@@ -51,6 +51,15 @@ export interface TestRunResult {
   failures: string[];
 }
 
+/** GitHub Issues 등록 결과 */
+export interface IssueReportResult {
+  projectName: string;
+  action: 'created' | 'commented' | 'skipped';
+  issueUrl?: string;
+  issueNumber?: number;
+  error?: string;
+}
+
 /** 전체 실행 결과 */
 export interface SchedulerRunResult {
   runId: string;
@@ -59,6 +68,7 @@ export interface SchedulerRunResult {
   durationMs: number;
   healthResults: HealthCheckResult[];
   testResults: TestRunResult[];
+  issueResults?: IssueReportResult[];
   summary: {
     totalProjects: number;
     healthyProjects: number;

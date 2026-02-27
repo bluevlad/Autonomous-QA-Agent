@@ -20,7 +20,9 @@
     "issues:create": "node scripts/create-issues.js",
     "project:add": "node scripts/add-project.js",
     "scheduler:start": "tsx scheduler/index.ts",
-    "scheduler:run": "tsx scheduler/index.ts --run"
+    "scheduler:run": "tsx scheduler/index.ts --run",
+    "scheduler:register": "scheduler\\scripts\\register-task.bat",
+    "scheduler:unregister": "scheduler\\scripts\\unregister-task.bat"
   },
   "keywords": [
     "qa",

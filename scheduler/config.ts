@@ -6,6 +6,19 @@
 
 import type { ProjectHealthConfig } from './types.js';
 
+/** 프로젝트명 → GitHub 저장소 매핑 */
+export const githubRepoMap: Record<string, string> = {
+  hopenvision: 'bluevlad/hopenvision',
+  teacherhub: 'bluevlad/TeacherHub',
+  healthpulse: 'bluevlad/HealthPulse',
+  allergyinsight: 'bluevlad/AllergyInsight',
+  allergynewsletter: 'bluevlad/AllergyNewsLetter',
+  academyinsight: 'bluevlad/AcademyInsight',
+  newsletterplatform: 'bluevlad/NewsLetterPlatform',
+  'unmong-main': 'bluevlad/unmong-main',
+  standup: 'bluevlad/StandUp',
+};
+
 export const schedulerConfig = {
   cron: process.env.SCHEDULER_CRON || '0 22 * * *',
   timezone: 'Asia/Seoul',
