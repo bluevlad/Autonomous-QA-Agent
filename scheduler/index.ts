@@ -13,6 +13,7 @@ import { checkAllProjects } from './health-checker.js';
 import { runAllTests } from './test-runner.js';
 import { saveRunLog, cleanOldLogs } from './logger.js';
 import { sendSlackNotification } from './slack-notifier.js';
+import { reportFailuresToGitHub } from './issue-reporter.js';
 import type { SchedulerRunResult } from './types.js';
 
 dotenv.config();
@@ -101,13 +102,26 @@ async function executeRun(): Promise<void> {
   console.log('\n[Phase 4] Slack 알림...');
   await sendSlackNotification(runResult);
 
-  // Phase 5: 오래된 로그 정리
-  console.log('\n[Phase 5] 오래된 로그 정리...');
+  // Phase 5: GitHub Issues 등록 (실패 있을 때만)
+  if (runResult.summary.totalFailed > 0 || runResult.summary.healthyProjects < runResult.summary.totalProjects) {
+    console.log('\n[Phase 5] GitHub Issues 등록...');
+    const issueResults = await reportFailuresToGitHub(runResult);
+    runResult.issueResults = issueResults;
+
+    const created = issueResults.filter((r) => r.action === 'created').length;
+    const commented = issueResults.filter((r) => r.action === 'commented').length;
+    console.log(`[Phase 5] 완료 - 신규 ${created}건, 코멘트 ${commented}건`);
+  } else {
+    console.log('\n[Phase 5] GitHub Issues - 실패 없음, 건너뜀');
+  }
+
+  // Phase 6: 오래된 로그 정리
+  console.log('\n[Phase 6] 오래된 로그 정리...');
   const deleted = cleanOldLogs();
   if (deleted > 0) {
-    console.log(`[Phase 5] ${deleted}개 로그 삭제`);
+    console.log(`[Phase 6] ${deleted}개 로그 삭제`);
   } else {
-    console.log('[Phase 5] 정리할 로그 없음');
+    console.log('[Phase 6] 정리할 로그 없음');
   }
 
   console.log(`\n${'='.repeat(60)}`);
