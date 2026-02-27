@@ -125,7 +125,7 @@ function buildBlocks(result: SchedulerRunResult): object[] {
     elements: [
       {
         type: 'mrkdwn',
-        text: `실행 시각: ${runTime}  |  소요 시간: ${durationSec}초  |  Autonomous QA Agent (자동)`,
+        text: `실행 시각: ${runTime}  |  소요 시간: ${durationSec}초  |  Autonomous QA Agent (${process.env.GITHUB_ACTIONS ? 'GitHub Actions' : 'Local'})`,
       },
     ],
   });
