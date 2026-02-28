@@ -62,8 +62,7 @@ function buildBlocks(result: SchedulerRunResult): object[] {
   for (const tr of testResults) testMap.set(tr.projectName, tr);
 
   const projectOrder = [
-    'hopenvision', 'allergyinsight', 'teacherhub', 'standup',
-    'healthpulse', 'allergynewsletter', 'academyinsight',
+    'hopenvision', 'allergyinsight', 'edufit', 'standup',
     'newsletterplatform', 'unmong-main',
   ];
 

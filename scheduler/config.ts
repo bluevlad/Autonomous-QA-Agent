@@ -1,7 +1,7 @@
 /**
  * QA 자동 점검 스케줄러 - 설정
  *
- * 환경변수 기반 설정 + 9개 프로젝트 Health Check URL 매핑
+ * 환경변수 기반 설정 + 6개 프로젝트 Health Check URL 매핑
  */
 
 import type { ProjectHealthConfig } from './types.js';
@@ -9,11 +9,8 @@ import type { ProjectHealthConfig } from './types.js';
 /** 프로젝트명 → GitHub 저장소 매핑 */
 export const githubRepoMap: Record<string, string> = {
   hopenvision: 'bluevlad/hopenvision',
-  teacherhub: 'bluevlad/TeacherHub',
-  healthpulse: 'bluevlad/HealthPulse',
   allergyinsight: 'bluevlad/AllergyInsight',
-  allergynewsletter: 'bluevlad/AllergyNewsLetter',
-  academyinsight: 'bluevlad/AcademyInsight',
+  edufit: 'bluevlad/EduFit',
   newsletterplatform: 'bluevlad/NewsLetterPlatform',
   'unmong-main': 'bluevlad/unmong-main',
   standup: 'bluevlad/StandUp',
@@ -50,39 +47,6 @@ export const projects: ProjectHealthConfig[] = [
     ],
   },
   {
-    name: 'teacherhub',
-    playwrightProject: 'teacherhub',
-    description: '강사 평판 분석 시스템',
-    endpoints: [
-      {
-        url: process.env.TEACHERHUB_API_URL
-          ? `${process.env.TEACHERHUB_API_URL}/api/health`
-          : 'http://localhost:8081/api/health',
-        label: 'Backend API',
-        strategy: 'json-health',
-      },
-      {
-        url: process.env.TEACHERHUB_URL || 'http://localhost:4010',
-        label: 'Frontend',
-        strategy: 'page-load',
-      },
-    ],
-  },
-  {
-    name: 'healthpulse',
-    playwrightProject: 'healthpulse',
-    description: '헬스케어 뉴스레터 서비스',
-    endpoints: [
-      {
-        url: process.env.HEALTHPULSE_URL
-          ? `${process.env.HEALTHPULSE_URL}/api/health`
-          : 'http://localhost:4030/api/health',
-        label: 'API',
-        strategy: 'json-health',
-      },
-    ],
-  },
-  {
     name: 'allergyinsight',
     playwrightProject: 'allergyinsight',
     description: '알러지 논문 검색 시스템',
@@ -102,33 +66,19 @@ export const projects: ProjectHealthConfig[] = [
     ],
   },
   {
-    name: 'allergynewsletter',
-    playwrightProject: 'allergynewsletter',
-    description: '알러지 뉴스 브리핑 서비스',
+    name: 'edufit',
+    playwrightProject: 'edufit',
+    description: '학원/강사 평판 분석 통합 플랫폼',
     endpoints: [
       {
-        url: process.env.ALLERGYNEWSLETTER_URL
-          ? `${process.env.ALLERGYNEWSLETTER_URL}/api/health`
-          : 'http://localhost:4050/api/health',
-        label: 'API',
-        strategy: 'json-health',
-      },
-    ],
-  },
-  {
-    name: 'academyinsight',
-    playwrightProject: 'academyinsight',
-    description: '학원 온라인 평판 모니터링',
-    endpoints: [
-      {
-        url: process.env.ACADEMYINSIGHT_API_URL
-          ? `${process.env.ACADEMYINSIGHT_API_URL}/api/health`
-          : 'http://localhost:8082/api/health',
+        url: process.env.EDUFIT_API_URL
+          ? `${process.env.EDUFIT_API_URL}/api/health`
+          : 'http://localhost:9070/api/health',
         label: 'Backend API',
         strategy: 'json-health',
       },
       {
-        url: process.env.ACADEMYINSIGHT_URL || 'http://localhost:4020',
+        url: process.env.EDUFIT_URL || 'http://localhost:4070',
         label: 'Frontend',
         strategy: 'page-load',
       },

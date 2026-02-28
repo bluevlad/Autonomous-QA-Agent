@@ -31,6 +31,8 @@ jobs:
           HOPENVISION_API_URL: ${{ secrets.HOPENVISION_API_URL }}
           ALLERGYINSIGHT_URL: ${{ secrets.ALLERGYINSIGHT_URL }}
           ALLERGYINSIGHT_API_URL: ${{ secrets.ALLERGYINSIGHT_API_URL }}
+          EDUFIT_URL: ${{ secrets.EDUFIT_URL }}
+          EDUFIT_API_URL: ${{ secrets.EDUFIT_API_URL }}
           NEWSLETTERPLATFORM_URL: ${{ secrets.NEWSLETTERPLATFORM_URL }}
           STANDUP_API_URL: ${{ secrets.STANDUP_API_URL }}
         run: npm run scheduler:run
