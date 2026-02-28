@@ -45,7 +45,7 @@ export default defineConfig({
                 },
                 {
                   key: '대상',
-                  value: 'hopenvision, allergyinsight, teacherhub, standup 외 5개',
+                  value: 'hopenvision, allergyinsight, edufit, standup 외 2개',
                 },
               ],
             },
@@ -81,38 +81,6 @@ export default defineConfig({
     },
 
     // ============================================
-    // TeacherHub 프로젝트
-    // ============================================
-    {
-      name: 'teacherhub',
-      testDir: './projects/TeacherHub/e2e',
-      use: {
-        ...devices['Desktop Chrome'],
-        baseURL: process.env.TEACHERHUB_URL || 'http://localhost:4010',
-      },
-      metadata: {
-        description: '공무원 학원 강사 선호도 조사',
-        github: 'bluevlad/TeacherHub',
-      },
-    },
-
-    // ============================================
-    // HealthPulse 프로젝트
-    // ============================================
-    {
-      name: 'healthpulse',
-      testDir: './projects/HealthPulse/e2e',
-      use: {
-        ...devices['Desktop Chrome'],
-        baseURL: process.env.HEALTHPULSE_URL || 'http://localhost:4030',
-      },
-      metadata: {
-        description: '헬스케어 뉴스레터 서비스',
-        github: 'bluevlad/HealthPulse',
-      },
-    },
-
-    // ============================================
     // AllergyInsight 프로젝트
     // ============================================
     {
@@ -129,35 +97,19 @@ export default defineConfig({
     },
 
     // ============================================
-    // AllergyNewsLetter 프로젝트
+    // EduFit 프로젝트
     // ============================================
     {
-      name: 'allergynewsletter',
-      testDir: './projects/AllergyNewsLetter/e2e',
+      name: 'edufit',
+      testDir: './projects/EduFit/e2e',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: process.env.ALLERGYNEWSLETTER_URL || 'http://localhost:4050',
+        baseURL: process.env.EDUFIT_URL || 'http://localhost:4070',
       },
       metadata: {
-        description: '알러지 뉴스 브리핑 서비스',
-        github: 'bluevlad/AllergyNewsLetter',
-      },
-    },
-
-    // ============================================
-    // AcademyInsight 프로젝트
-    // ============================================
-    {
-      name: 'academyinsight',
-      testDir: './projects/AcademyInsight/e2e',
-      use: {
-        ...devices['Desktop Chrome'],
-        baseURL: process.env.ACADEMYINSIGHT_URL || 'http://localhost:4020',
-      },
-      metadata: {
-        description: '학원 온라인 평판 모니터링 시스템',
-        github: 'bluevlad/AcademyInsight',
-        apiUrl: process.env.ACADEMYINSIGHT_API_URL || 'http://localhost:8082',
+        description: '학원/강사 평판 분석 통합 플랫폼',
+        github: 'bluevlad/EduFit',
+        apiUrl: process.env.EDUFIT_API_URL || 'http://localhost:9070',
       },
     },
 

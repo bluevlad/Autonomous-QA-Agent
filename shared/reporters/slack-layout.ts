@@ -68,11 +68,8 @@ function generateCustomLayout(summaryResults: SummaryResults) {
   const projectOrder = [
     'hopenvision',
     'allergyinsight',
-    'teacherhub',
+    'edufit',
     'standup',
-    'healthpulse',
-    'allergynewsletter',
-    'academyinsight',
     'newsletterplatform',
     'unmong-main',
   ];
