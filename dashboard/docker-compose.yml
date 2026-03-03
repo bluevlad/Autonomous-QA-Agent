@@ -1,0 +1,30 @@
+services:
+  qa-dashboard-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: qa-dashboard-api
+    ports:
+      - "9095:8000"
+    environment:
+      - QA_DASHBOARD_DATABASE_URL=postgresql://qa_dashboard_svc:qa_dashboard_pass@host.docker.internal:5432/qa_dashboard
+      - QA_DASHBOARD_API_KEY=${QA_DASHBOARD_API_KEY:-qa-agent-secret-key}
+      - QA_DASHBOARD_CORS_ORIGINS=*
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  qa-dashboard-web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: qa-dashboard-web
+    ports:
+      - "4095:80"
+    depends_on:
+      qa-dashboard-api:
+        condition: service_healthy
+    restart: unless-stopped
