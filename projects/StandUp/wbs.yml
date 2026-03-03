@@ -1,0 +1,11 @@
+project: standup
+version: "1.0"
+features:
+  - id: SU-HEALTH-001
+    name: 헬스체크 및 DB 상태
+    owner: bluevlad
+    testFiles: [e2e/main.spec.ts]
+  - id: SU-API-001
+    name: API 입력 검증
+    owner: bluevlad
+    testFiles: [e2e/api.spec.ts]

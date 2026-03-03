@@ -1,0 +1,15 @@
+project: newsletterplatform
+version: "1.0"
+features:
+  - id: NL-MAIN-001
+    name: 메인 페이지 및 구독 폼
+    owner: bluevlad
+    testFiles: [e2e/main.spec.ts]
+  - id: NL-API-001
+    name: 테넌트/뉴스레터/발송 API
+    owner: bluevlad
+    testFiles: [e2e/api.spec.ts]
+  - id: NL-SEC-001
+    name: 보안 방어 (이메일 인젝션/토큰)
+    owner: bluevlad
+    testFiles: [e2e/security.spec.ts]
