@@ -4,6 +4,16 @@
  * 사용법:
  *   npm run scheduler:start   → cron 모드 (프로세스 상주, 매일 22:00 KST)
  *   npm run scheduler:run     → 즉시 1회 실행 후 종료
+ *
+ * 8단계 파이프라인:
+ *   1. Health Check (6개 프로젝트 병렬)
+ *   2. Playwright 테스트 (healthy만 순차, failureDetails 포함)
+ *   3. 로그 저장
+ *   4. 개선 제안 분석 (패턴 기반 5규칙)
+ *   5. Slack 알림 (개선 제안 섹션 포함)
+ *   6. GitHub Issues 등록 (우선순위/WBS/상세 + 개선 제안 등록)
+ *   7. 이슈 자동 close (복구 감지)
+ *   8. 오래된 로그 정리
  */
 
 import cron from 'node-cron';
@@ -13,7 +23,8 @@ import { checkAllProjects } from './health-checker.js';
 import { runAllTests } from './test-runner.js';
 import { saveRunLog, cleanOldLogs } from './logger.js';
 import { sendSlackNotification } from './slack-notifier.js';
-import { reportFailuresToGitHub } from './issue-reporter.js';
+import { reportFailuresToGitHub, closeResolvedIssues, reportSuggestionsToGitHub } from './issue-reporter.js';
+import { analyzeAndSuggest } from './improvement-advisor.js';
 import type { SchedulerRunResult } from './types.js';
 
 dotenv.config();
@@ -98,30 +109,66 @@ async function executeRun(): Promise<void> {
   const logPath = saveRunLog(runResult);
   console.log(`[Phase 3] 저장 완료: ${logPath}`);
 
-  // Phase 4: Slack 알림
-  console.log('\n[Phase 4] Slack 알림...');
+  // Phase 4: 개선 제안 분석
+  console.log('\n[Phase 4] 개선 제안 분석...');
+  const suggestions = analyzeAndSuggest();
+  runResult.suggestions = suggestions;
+
+  if (suggestions.length > 0) {
+    console.log(`[Phase 4] ${suggestions.length}건 개선 제안 생성`);
+    for (const s of suggestions) {
+      console.log(`  [${s.priority}] ${s.projectName}: ${s.title}`);
+    }
+  } else {
+    console.log('[Phase 4] 개선 제안 없음');
+  }
+
+  // Phase 5: Slack 알림
+  console.log('\n[Phase 5] Slack 알림...');
   await sendSlackNotification(runResult);
 
-  // Phase 5: GitHub Issues 등록 (실패 있을 때만)
+  // Phase 6: GitHub Issues 등록 (실패 + 개선 제안)
   if (runResult.summary.totalFailed > 0 || runResult.summary.healthyProjects < runResult.summary.totalProjects) {
-    console.log('\n[Phase 5] GitHub Issues 등록...');
+    console.log('\n[Phase 6] GitHub Issues 등록...');
     const issueResults = await reportFailuresToGitHub(runResult);
     runResult.issueResults = issueResults;
 
     const created = issueResults.filter((r) => r.action === 'created').length;
     const commented = issueResults.filter((r) => r.action === 'commented').length;
-    console.log(`[Phase 5] 완료 - 신규 ${created}건, 코멘트 ${commented}건`);
+    console.log(`[Phase 6] 완료 - 신규 ${created}건, 코멘트 ${commented}건`);
   } else {
-    console.log('\n[Phase 5] GitHub Issues - 실패 없음, 건너뜀');
+    console.log('\n[Phase 6] GitHub Issues - 실패 없음, 건너뜀');
   }
 
-  // Phase 6: 오래된 로그 정리
-  console.log('\n[Phase 6] 오래된 로그 정리...');
+  // 개선 제안 이슈 등록
+  if (suggestions.length > 0) {
+    console.log('[Phase 6] 개선 제안 이슈 등록...');
+    const suggestionResults = reportSuggestionsToGitHub(suggestions, runId);
+    const suggestionCreated = suggestionResults.filter((r) => r.action === 'created').length;
+    console.log(`[Phase 6] 개선 제안 - 신규 ${suggestionCreated}건`);
+
+    if (!runResult.issueResults) runResult.issueResults = [];
+    runResult.issueResults.push(...suggestionResults);
+  }
+
+  // Phase 7: 이슈 자동 close
+  console.log('\n[Phase 7] 이슈 자동 close...');
+  const closedIssues = closeResolvedIssues(runResult);
+  runResult.closedIssues = closedIssues;
+
+  if (closedIssues.length > 0) {
+    console.log(`[Phase 7] ${closedIssues.length}건 자동 close`);
+  } else {
+    console.log('[Phase 7] close 대상 없음');
+  }
+
+  // Phase 8: 오래된 로그 정리
+  console.log('\n[Phase 8] 오래된 로그 정리...');
   const deleted = cleanOldLogs();
   if (deleted > 0) {
-    console.log(`[Phase 6] ${deleted}개 로그 삭제`);
+    console.log(`[Phase 8] ${deleted}개 로그 삭제`);
   } else {
-    console.log('[Phase 6] 정리할 로그 없음');
+    console.log('[Phase 8] 정리할 로그 없음');
   }
 
   console.log(`\n${'='.repeat(60)}`);
