@@ -2,11 +2,24 @@
  * QA 자동 점검 스케줄러 - Slack 알림
  *
  * 기존 slack-layout.ts의 Block Kit 패턴과 일관성 유지
- * header → section → divider → projects → context
+ * header → section → divider → projects → suggestions → auto-close → context
  */
 
 import { schedulerConfig } from './config.js';
-import type { SchedulerRunResult, HealthCheckResult, TestRunResult } from './types.js';
+import { determinePriority } from './issue-reporter.js';
+import type {
+  SchedulerRunResult,
+  HealthCheckResult,
+  TestRunResult,
+  PriorityLevel,
+} from './types.js';
+
+const PRIORITY_EMOJI: Record<PriorityLevel, string> = {
+  P0: ':rotating_light:',
+  P1: ':red_circle:',
+  P2: ':large_orange_circle:',
+  P3: ':yellow_circle:',
+};
 
 function buildBlocks(result: SchedulerRunResult): object[] {
   const { summary, healthResults, testResults } = result;
@@ -72,19 +85,22 @@ function buildBlocks(result: SchedulerRunResult): object[] {
     if (!health) continue;
 
     const lines: string[] = [];
+    const priority = determinePriority(health, test);
+    const priorityEmoji = PRIORITY_EMOJI[priority];
 
-    // Health 상태
+    // Health 상태 + 우선순위
     if (health.healthy) {
       const avgMs = Math.round(
         health.endpoints.reduce((sum, e) => sum + e.responseTimeMs, 0) /
           health.endpoints.length,
       );
-      lines.push(`:white_check_mark: *${name}*  |  응답 \`${avgMs}ms\``);
+      if (test && test.executed && test.failed > 0) {
+        lines.push(`${priorityEmoji} *${name}* \`${priority}\`  |  응답 \`${avgMs}ms\``);
+      } else {
+        lines.push(`:white_check_mark: *${name}*  |  응답 \`${avgMs}ms\``);
+      }
     } else {
-      const failedEndpoints = health.endpoints
-        .filter((e) => !e.healthy)
-        .map((e) => e.label);
-      lines.push(`:red_circle: *${name}*  |  미응답: ${failedEndpoints.join(', ')}`);
+      lines.push(`${priorityEmoji} *${name}* \`${priority}\`  |  미응답: ${health.endpoints.filter((e) => !e.healthy).map((e) => e.label).join(', ')}`);
     }
 
     // 테스트 결과
@@ -112,6 +128,44 @@ function buildBlocks(result: SchedulerRunResult): object[] {
   }
 
   blocks.push({ type: 'divider' });
+
+  // 개선 제안 섹션
+  if (result.suggestions && result.suggestions.length > 0) {
+    const suggestionLines: string[] = [
+      `:bulb: *개선 제안 ${result.suggestions.length}건*`,
+      '',
+    ];
+
+    for (const s of result.suggestions.slice(0, 5)) {
+      const emoji = PRIORITY_EMOJI[s.priority];
+      suggestionLines.push(`${emoji} \`${s.priority}\` *${s.projectName}* - ${s.title}`);
+    }
+
+    if (result.suggestions.length > 5) {
+      suggestionLines.push(`... 외 ${result.suggestions.length - 5}건`);
+    }
+
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: suggestionLines.join('\n') },
+    });
+
+    blocks.push({ type: 'divider' });
+  }
+
+  // 자동 close 정보
+  if (result.closedIssues && result.closedIssues.length > 0) {
+    const closeLines = result.closedIssues.map(
+      (ci) => `:white_check_mark: 자동 close: *${ci.projectName}* <${ci.issueUrl}|#${ci.issueNumber}>`,
+    );
+
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: closeLines.join('\n') },
+    });
+
+    blocks.push({ type: 'divider' });
+  }
 
   // Footer
   const durationSec = Math.round(result.durationMs / 1000);
