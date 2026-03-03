@@ -75,6 +75,31 @@ CREATE TABLE qa_failure_details (
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- GitHub Issue 등록 결과 (이슈당 1 row)
+CREATE TABLE qa_issue_results (
+    id              BIGSERIAL PRIMARY KEY,
+    run_id          BIGINT NOT NULL REFERENCES qa_runs(id) ON DELETE CASCADE,
+    project_name    VARCHAR(64) NOT NULL,
+    action          VARCHAR(16) NOT NULL,
+    issue_url       TEXT,
+    issue_number    INTEGER,
+    error           TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- 엔드포인트별 Health Check 결과 (엔드포인트당 1 row, 정규화)
+CREATE TABLE qa_endpoint_results (
+    id                BIGSERIAL PRIMARY KEY,
+    health_result_id  BIGINT NOT NULL REFERENCES qa_health_results(id) ON DELETE CASCADE,
+    url               TEXT NOT NULL,
+    label             VARCHAR(64),
+    healthy           BOOLEAN NOT NULL,
+    status_code       INTEGER,
+    response_time_ms  FLOAT NOT NULL,
+    error             TEXT,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- 개선 제안
 CREATE TABLE qa_suggestions (
     id              BIGSERIAL PRIMARY KEY,
@@ -100,6 +125,12 @@ CREATE INDEX idx_qa_test_results_project ON qa_test_results (project_name);
 
 CREATE INDEX idx_qa_failure_details_test_result ON qa_failure_details (test_result_id);
 CREATE INDEX idx_qa_failure_details_search ON qa_failure_details USING GIN (search_vector);
+
+CREATE INDEX idx_qa_issue_results_run_id ON qa_issue_results (run_id);
+CREATE INDEX idx_qa_issue_results_project ON qa_issue_results (project_name);
+
+CREATE INDEX idx_qa_endpoint_results_health ON qa_endpoint_results (health_result_id);
+CREATE INDEX idx_qa_endpoint_results_response_time ON qa_endpoint_results (response_time_ms);
 
 CREATE INDEX idx_qa_suggestions_run_id ON qa_suggestions (run_id);
 
@@ -130,3 +161,37 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER trg_qa_failure_details_search
     BEFORE INSERT OR UPDATE ON qa_failure_details
     FOR EACH ROW EXECUTE FUNCTION qa_failure_details_search_trigger();
+
+-- 5. 데이터 보관 정책
+-- 상세 데이터(failure_details, endpoint_results): 90일
+-- raw_json: 60일 후 NULL 처리 (집계 데이터는 유지)
+-- 집계 데이터(qa_runs, qa_health_results, qa_test_results): 1년
+
+CREATE OR REPLACE FUNCTION qa_cleanup(retention_days INTEGER DEFAULT 90) RETURNS TABLE(
+    deleted_failures BIGINT,
+    deleted_endpoints BIGINT,
+    cleared_raw_json BIGINT
+) AS $$
+DECLARE
+    v_failures BIGINT;
+    v_endpoints BIGINT;
+    v_raw BIGINT;
+BEGIN
+    -- 상세 데이터 삭제
+    DELETE FROM qa_failure_details
+    WHERE created_at < NOW() - (retention_days || ' days')::interval;
+    GET DIAGNOSTICS v_failures = ROW_COUNT;
+
+    DELETE FROM qa_endpoint_results
+    WHERE created_at < NOW() - (retention_days || ' days')::interval;
+    GET DIAGNOSTICS v_endpoints = ROW_COUNT;
+
+    -- raw_json NULL 처리 (60일)
+    UPDATE qa_runs SET raw_json = NULL
+    WHERE raw_json IS NOT NULL
+      AND created_at < NOW() - INTERVAL '60 days';
+    GET DIAGNOSTICS v_raw = ROW_COUNT;
+
+    RETURN QUERY SELECT v_failures, v_endpoints, v_raw;
+END;
+$$ LANGUAGE plpgsql;

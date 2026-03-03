@@ -97,6 +97,11 @@ async def get_run_detail(run_id: str):
             run_pk,
         )
 
+        issue_rows = await conn.fetch(
+            "SELECT * FROM qa_issue_results WHERE run_id = $1 ORDER BY id",
+            run_pk,
+        )
+
     # Parse endpoints JSON
     health_results = []
     for hr in health_rows:
@@ -124,4 +129,5 @@ async def get_run_detail(run_id: str):
         "testResults": [dict(r) for r in test_rows],
         "failureDetails": [dict(r) for r in failure_rows],
         "suggestions": [dict(r) for r in suggestion_rows],
+        "issueResults": [dict(r) for r in issue_rows],
     }

@@ -59,12 +59,19 @@ async def ingest(req: IngestRequest, _=Depends(verify_api_key)):
             )
             run_pk = run_row["id"]
 
-            # 2. qa_health_results
+            # 중복 ingestion 시 하위 테이블 초기화 (ON CONFLICT 대응)
+            await conn.execute("DELETE FROM qa_health_results WHERE run_id = $1", run_pk)
+            await conn.execute("DELETE FROM qa_test_results WHERE run_id = $1", run_pk)
+            await conn.execute("DELETE FROM qa_suggestions WHERE run_id = $1", run_pk)
+            await conn.execute("DELETE FROM qa_issue_results WHERE run_id = $1", run_pk)
+
+            # 2. qa_health_results + qa_endpoint_results (정규화)
             for hr in req.healthResults:
-                await conn.execute(
+                hr_row = await conn.fetchrow(
                     """
                     INSERT INTO qa_health_results (run_id, project_name, healthy, checked_at, endpoints)
                     VALUES ($1, $2, $3, $4, $5)
+                    RETURNING id
                     """,
                     run_pk,
                     hr.projectName,
@@ -72,6 +79,24 @@ async def ingest(req: IngestRequest, _=Depends(verify_api_key)):
                     datetime.fromisoformat(hr.checkedAt),
                     json.dumps([e.model_dump() for e in hr.endpoints], default=str),
                 )
+                hr_pk = hr_row["id"]
+
+                for ep in hr.endpoints:
+                    await conn.execute(
+                        """
+                        INSERT INTO qa_endpoint_results (
+                            health_result_id, url, label, healthy,
+                            status_code, response_time_ms, error
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+                        """,
+                        hr_pk,
+                        ep.url,
+                        ep.label,
+                        ep.healthy,
+                        ep.statusCode,
+                        ep.responseTimeMs,
+                        ep.error,
+                    )
 
             # 3. qa_test_results + qa_failure_details
             for tr in req.testResults:
@@ -139,6 +164,23 @@ async def ingest(req: IngestRequest, _=Depends(verify_api_key)):
                         sg.title,
                         sg.description,
                         sg.projectName,
+                    )
+
+            # 5. qa_issue_results
+            if req.issueResults:
+                for ir in req.issueResults:
+                    await conn.execute(
+                        """
+                        INSERT INTO qa_issue_results (
+                            run_id, project_name, action, issue_url, issue_number, error
+                        ) VALUES ($1, $2, $3, $4, $5, $6)
+                        """,
+                        run_pk,
+                        ir.projectName,
+                        ir.action,
+                        ir.issueUrl,
+                        ir.issueNumber,
+                        ir.error,
                     )
 
     return {"status": "ok", "runId": req.runId, "dbId": run_pk}
