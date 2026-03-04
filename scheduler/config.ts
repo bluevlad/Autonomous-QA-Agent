@@ -24,6 +24,8 @@ export const schedulerConfig = {
   logDir: process.env.SCHEDULER_LOG_DIR || './scheduler/logs',
   logRetentionDays: 30,
   slackWebhookUrl: process.env.SLACK_WEBHOOK_URL || '',
+  dashboardApiUrl: process.env.DASHBOARD_API_URL || '',
+  dashboardApiKey: process.env.DASHBOARD_API_KEY || '',
 };
 
 export const projects: ProjectHealthConfig[] = [
