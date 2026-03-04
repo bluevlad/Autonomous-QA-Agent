@@ -1,0 +1,19 @@
+project: hopenvision
+version: "1.0"
+features:
+  - id: HV-EXAM-001
+    name: 시험 목록 조회
+    owner: bluevlad
+    testFiles: [e2e/exam-list.spec.ts, e2e/api.spec.ts]
+  - id: HV-EXAM-002
+    name: 시험 등록/수정
+    owner: bluevlad
+    testFiles: [e2e/exam-form.spec.ts]
+  - id: HV-EXAM-003
+    name: 정답 입력
+    owner: bluevlad
+    testFiles: [e2e/answer-key.spec.ts]
+  - id: HV-SEC-001
+    name: 보안 방어
+    owner: bluevlad
+    testFiles: [e2e/security.spec.ts]

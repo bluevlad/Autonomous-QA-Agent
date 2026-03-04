@@ -1,0 +1,7 @@
+project: edufit
+version: "1.0"
+features:
+  - id: EF-CORE-001
+    name: 학원/강사 평판 분석
+    owner: bluevlad
+    testFiles: []

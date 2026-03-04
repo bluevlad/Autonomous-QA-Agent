@@ -1,0 +1,15 @@
+project: allergyinsight
+version: "1.0"
+features:
+  - id: AI-MAIN-001
+    name: 메인 페이지 및 UI
+    owner: bluevlad
+    testFiles: [e2e/main.spec.ts]
+  - id: AI-API-001
+    name: Health Check 및 알러젠 API
+    owner: bluevlad
+    testFiles: [e2e/api.spec.ts]
+  - id: AI-SEC-001
+    name: 보안 방어 (CORS/JWT)
+    owner: bluevlad
+    testFiles: [e2e/security.spec.ts]

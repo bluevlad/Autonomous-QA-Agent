@@ -1,0 +1,15 @@
+project: unmong-main
+version: "1.0"
+features:
+  - id: UM-MAIN-001
+    name: 메인 포털 및 서비스 링크
+    owner: bluevlad
+    testFiles: [e2e/main.spec.ts]
+  - id: UM-API-001
+    name: 서비스 가용성 및 HTTPS
+    owner: bluevlad
+    testFiles: [e2e/api.spec.ts]
+  - id: UM-SEC-001
+    name: 보안 방어 (SSL/헤더)
+    owner: bluevlad
+    testFiles: [e2e/security.spec.ts]

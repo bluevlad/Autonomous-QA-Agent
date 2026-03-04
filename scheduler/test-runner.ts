@@ -9,7 +9,7 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { schedulerConfig } from './config.js';
-import type { HealthCheckResult, TestRunResult } from './types.js';
+import type { HealthCheckResult, TestRunResult, FailureDetail } from './types.js';
 
 interface PlaywrightJsonResult {
   suites?: PlaywrightSuite[];
@@ -29,12 +29,24 @@ interface PlaywrightSuite {
 
 interface PlaywrightSpec {
   title: string;
+  file?: string;
   tests?: PlaywrightTest[];
 }
 
 interface PlaywrightTest {
   projectName?: string;
-  results?: { status: string }[];
+  results?: {
+    status: string;
+    duration?: number;
+    error?: { message?: string };
+  }[];
+}
+
+function extractCategory(filePath?: string): string | undefined {
+  if (!filePath) return undefined;
+  const basename = path.basename(filePath, '.spec.ts');
+  const knownCategories = ['security', 'api', 'e2e', 'main'];
+  return knownCategories.includes(basename) ? basename : 'e2e';
 }
 
 function parseResultsJson(projectName: string): {
@@ -43,9 +55,10 @@ function parseResultsJson(projectName: string): {
   skipped: number;
   total: number;
   failures: string[];
+  failureDetails: FailureDetail[];
 } {
   const resultsPath = path.resolve('test-results/results.json');
-  const defaultResult = { passed: 0, failed: 0, skipped: 0, total: 0, failures: [] as string[] };
+  const defaultResult = { passed: 0, failed: 0, skipped: 0, total: 0, failures: [] as string[], failureDetails: [] as FailureDetail[] };
 
   if (!fs.existsSync(resultsPath)) return defaultResult;
 
@@ -58,9 +71,11 @@ function parseResultsJson(projectName: string): {
       const failed = data.stats.unexpected || 0;
       const skipped = data.stats.skipped || 0;
 
-      // 실패 테스트 이름 수집
       const failures: string[] = [];
       collectFailures(data.suites || [], projectName, failures);
+
+      const failureDetails: FailureDetail[] = [];
+      collectFailureDetails(data.suites || [], projectName, '', failureDetails);
 
       return {
         passed,
@@ -68,6 +83,7 @@ function parseResultsJson(projectName: string): {
         skipped,
         total: passed + failed + skipped,
         failures,
+        failureDetails,
       };
     }
 
@@ -93,6 +109,41 @@ function collectFailures(
               test.results?.some((r) => r.status === 'unexpected' || r.status === 'failed')
             ) {
               failures.push(spec.title);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+function collectFailureDetails(
+  suites: PlaywrightSuite[],
+  projectName: string,
+  parentSuiteName: string,
+  details: FailureDetail[],
+): void {
+  for (const suite of suites) {
+    const suiteName = parentSuiteName ? `${parentSuiteName} > ${suite.title}` : suite.title;
+    if (suite.suites) collectFailureDetails(suite.suites, projectName, suiteName, details);
+    if (suite.specs) {
+      for (const spec of suite.specs) {
+        if (spec.tests) {
+          for (const test of spec.tests) {
+            if (test.projectName !== projectName) continue;
+            const failedResult = test.results?.find(
+              (r) => r.status === 'unexpected' || r.status === 'failed',
+            );
+            if (failedResult) {
+              const errorMsg = failedResult.error?.message;
+              details.push({
+                testTitle: spec.title,
+                suiteName,
+                filePath: spec.file,
+                errorMessage: errorMsg ? errorMsg.slice(0, 500) : undefined,
+                durationMs: failedResult.duration,
+                category: extractCategory(spec.file),
+              });
             }
           }
         }
@@ -167,7 +218,7 @@ export async function runProjectTests(
 
   console.log(`[${projectName}] Playwright 테스트 시작...`);
   const { exitCode, durationMs } = await runPlaywright(projectName);
-  const stats = parseResultsJson(projectName);
+  const { failureDetails, ...stats } = parseResultsJson(projectName);
 
   console.log(
     `[${projectName}] 완료 (exit=${exitCode}, ${stats.passed}통과/${stats.failed}실패/${stats.skipped}스킵, ${Math.round(durationMs / 1000)}초)`,
@@ -177,6 +228,7 @@ export async function runProjectTests(
     projectName,
     executed: true,
     ...stats,
+    failureDetails: failureDetails.length > 0 ? failureDetails : undefined,
     exitCode,
     durationMs,
   };
