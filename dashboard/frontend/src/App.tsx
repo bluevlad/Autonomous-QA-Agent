@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ConfigProvider, Layout, theme } from 'antd';
+import { ConfigProvider, theme } from 'antd';
+import AppLayout from './components/layout/AppLayout';
 import Dashboard from './pages/Dashboard';
 import RunDetail from './pages/RunDetail';
 import ProjectTimeline from './pages/ProjectTimeline';
-
-const { Content } = Layout;
+import ApiGuidePage from './pages/ApiGuidePage';
 
 function App() {
   return (
@@ -15,15 +15,14 @@ function App() {
       }}
     >
       <BrowserRouter>
-        <Layout style={{ minHeight: '100vh', background: '#f5f5f5' }}>
-          <Content style={{ maxWidth: 1400, margin: '0 auto', width: '100%' }}>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/runs/:runId" element={<RunDetail />} />
-              <Route path="/projects/:name" element={<ProjectTimeline />} />
-            </Routes>
-          </Content>
-        </Layout>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/runs/:runId" element={<RunDetail />} />
+            <Route path="/projects/:name" element={<ProjectTimeline />} />
+            <Route path="/api-guide" element={<ApiGuidePage />} />
+          </Route>
+        </Routes>
       </BrowserRouter>
     </ConfigProvider>
   );

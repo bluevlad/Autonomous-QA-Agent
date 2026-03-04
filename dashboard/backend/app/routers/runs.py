@@ -1,8 +1,9 @@
 import json
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from ..database import get_pool
+from .health import verify_api_key
 
 router = APIRouter()
 
@@ -131,3 +132,19 @@ async def get_run_detail(run_id: str):
         "suggestions": [dict(r) for r in suggestion_rows],
         "issueResults": [dict(r) for r in issue_rows],
     }
+
+
+@router.delete("/api/runs/{run_id}")
+async def delete_run(run_id: str, _=Depends(verify_api_key)):
+    """Delete a run and all related data (cascade)."""
+    pool = await get_pool()
+
+    async with pool.acquire() as conn:
+        result = await conn.execute(
+            "DELETE FROM qa_runs WHERE run_id = $1", run_id
+        )
+
+    if result == "DELETE 0":
+        raise HTTPException(status_code=404, detail=f"Run '{run_id}' not found")
+
+    return {"status": "ok", "runId": run_id, "message": "Run and related data deleted"}
