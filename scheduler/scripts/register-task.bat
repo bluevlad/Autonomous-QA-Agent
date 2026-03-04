@@ -58,6 +58,5 @@ echo [완료] Autonomous-QA-Agent-Daily 등록 성공
 echo   - 경로: %PROJECT_ROOT%
 echo   - 스케줄: 매일 22:00
 echo   - 로그: scheduler\logs\task-scheduler.log
-echo   - Dashboard 전송: .env의 DASHBOARD_API_URL 설정 시 자동 활성화
 
 endlocal

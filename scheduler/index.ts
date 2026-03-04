@@ -5,11 +5,10 @@
  *   npm run scheduler:start   → cron 모드 (프로세스 상주, 매일 22:00 KST)
  *   npm run scheduler:run     → 즉시 1회 실행 후 종료
  *
- * 8단계 파이프라인:
+ * 7단계 파이프라인:
  *   1. Health Check (6개 프로젝트 병렬)
  *   2. Playwright 테스트 (healthy만 순차, failureDetails 포함)
  *   3. 로그 저장
- *   3.5. Dashboard 전송 (DASHBOARD_API_URL 설정 시)
  *   4. 개선 제안 분석 (패턴 기반 5규칙)
  *   5. Slack 알림 (개선 제안 섹션 포함)
  *   6. GitHub Issues 등록 (우선순위/WBS/상세 + 개선 제안 등록)
@@ -25,7 +24,6 @@ import { runAllTests } from './test-runner.js';
 import { saveRunLog, cleanOldLogs } from './logger.js';
 import { sendSlackNotification } from './slack-notifier.js';
 import { reportFailuresToGitHub, closeResolvedIssues, reportSuggestionsToGitHub } from './issue-reporter.js';
-import { sendToDashboard } from './dashboard-sender.js';
 import { analyzeAndSuggest } from './improvement-advisor.js';
 import type { SchedulerRunResult } from './types.js';
 
@@ -110,13 +108,6 @@ async function executeRun(): Promise<void> {
   console.log('\n[Phase 3] 로그 저장...');
   const logPath = saveRunLog(runResult);
   console.log(`[Phase 3] 저장 완료: ${logPath}`);
-
-  // Phase 3.5: Dashboard 전송
-  if (schedulerConfig.dashboardApiUrl) {
-    console.log('\n[Phase 3.5] Dashboard 전송...');
-    const sent = await sendToDashboard(runResult);
-    console.log(`[Phase 3.5] ${sent ? '전송 완료' : '전송 실패 (파이프라인 계속)'}`);
-  }
 
   // Phase 4: 개선 제안 분석
   console.log('\n[Phase 4] 개선 제안 분석...');

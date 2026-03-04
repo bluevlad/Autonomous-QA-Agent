@@ -41,10 +41,6 @@ projects/*/.claude/settings.local.json
 # Scheduler logs
 scheduler/logs/
 
-# Dashboard
-dashboard/frontend/node_modules/
-dashboard/frontend/dist/
-
 # Temporary files
 *.tmp
 *.temp
