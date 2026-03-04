@@ -14,6 +14,7 @@ import { runAllTests } from './test-runner.js';
 import { saveRunLog, cleanOldLogs } from './logger.js';
 import { sendSlackNotification } from './slack-notifier.js';
 import { reportFailuresToGitHub } from './issue-reporter.js';
+import { sendToDashboard } from './dashboard-sender.js';
 import type { SchedulerRunResult } from './types.js';
 
 dotenv.config();
@@ -97,6 +98,13 @@ async function executeRun(): Promise<void> {
   console.log('\n[Phase 3] 로그 저장...');
   const logPath = saveRunLog(runResult);
   console.log(`[Phase 3] 저장 완료: ${logPath}`);
+
+  // Phase 3.5: Dashboard 전송
+  if (schedulerConfig.dashboardApiUrl) {
+    console.log('\n[Phase 3.5] Dashboard 전송...');
+    const sent = await sendToDashboard(runResult);
+    console.log(`[Phase 3.5] ${sent ? '전송 완료' : '전송 실패 (파이프라인 계속)'}`);
+  }
 
   // Phase 4: Slack 알림
   console.log('\n[Phase 4] Slack 알림...');

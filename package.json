@@ -19,7 +19,8 @@
     "scheduler:start": "tsx scheduler/index.ts",
     "scheduler:run": "tsx scheduler/index.ts --run",
     "scheduler:register": "scheduler\\scripts\\register-task.bat",
-    "scheduler:unregister": "scheduler\\scripts\\unregister-task.bat"
+    "scheduler:unregister": "scheduler\\scripts\\unregister-task.bat",
+    "migrate:logs": "tsx scheduler/migrate-logs.ts"
   },
   "keywords": [
     "qa",
