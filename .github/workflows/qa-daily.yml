@@ -1,9 +1,7 @@
 name: QA Daily Check
 
 on:
-  schedule:
-    - cron: '0 13 * * *'  # 22:00 KST = 13:00 UTC
-  workflow_dispatch:        # 수동 실행
+  workflow_dispatch:        # 수동 실행 전용 (로컬 Task Scheduler 주력 운영)
 
 jobs:
   qa-check:
