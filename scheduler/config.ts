@@ -14,6 +14,7 @@ export const githubRepoMap: Record<string, string> = {
   newsletterplatform: 'bluevlad/NewsLetterPlatform',
   'unmong-main': 'bluevlad/unmong-main',
   standup: 'bluevlad/StandUp',
+  'qa-agent': 'bluevlad/Autonomous-QA-Agent',
 };
 
 export const schedulerConfig = {
@@ -123,6 +124,25 @@ export const projects: ProjectHealthConfig[] = [
           : 'http://localhost:9060/api/v1/health',
         label: 'API',
         strategy: 'json-health',
+      },
+    ],
+  },
+  {
+    name: 'qa-agent',
+    playwrightProject: 'qa-agent',
+    description: 'QA Dashboard 관제 시스템',
+    endpoints: [
+      {
+        url: process.env.DASHBOARD_API_URL
+          ? `${process.env.DASHBOARD_API_URL}/api/health`
+          : 'http://172.30.1.72:9095/api/health',
+        label: 'Dashboard API',
+        strategy: 'json-health',
+      },
+      {
+        url: process.env.DASHBOARD_WEB_URL || 'http://172.30.1.72:4095',
+        label: 'Dashboard Web',
+        strategy: 'page-load',
       },
     ],
   },

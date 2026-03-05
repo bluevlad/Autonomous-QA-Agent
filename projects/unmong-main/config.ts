@@ -20,12 +20,11 @@ export const config = {
 
   // 서비스 링크 검증 대상 (환경변수로 설정)
   serviceLinks: {
-    academyInsight: process.env.ACADEMYINSIGHT_URL || 'http://localhost:4020',
-    teacherHub: process.env.TEACHERHUB_URL || 'http://localhost:4010',
-    healthPulse: process.env.HEALTHPULSE_URL || 'http://localhost:4030',
     allergyInsight: process.env.ALLERGYINSIGHT_URL || 'http://localhost:4040',
     hopenvision: process.env.HOPENVISION_URL || 'http://localhost:4060',
+    eduFit: process.env.EDUFIT_URL || 'http://localhost:4070',
     newsletterPlatform: process.env.NEWSLETTERPLATFORM_URL || 'http://localhost:4055',
+    standUp: process.env.STANDUP_API_URL || 'http://localhost:9060',
   },
 };
 

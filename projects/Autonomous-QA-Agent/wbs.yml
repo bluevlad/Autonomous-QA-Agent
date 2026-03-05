@@ -1,0 +1,30 @@
+project: qa-agent
+version: "1.0"
+features:
+  - id: QA-01
+    name: Dashboard API 헬스체크
+    owner: bluevlad
+    testFiles:
+      - e2e/dashboard-api.spec.ts
+    testCases:
+      - Health 엔드포인트가 정상 응답한다
+      - 최근 QA 실행 목록을 조회할 수 있다
+      - 프로젝트 목록을 조회할 수 있다
+
+  - id: QA-02
+    name: Dashboard API 인증
+    owner: bluevlad
+    testFiles:
+      - e2e/dashboard-api.spec.ts
+    testCases:
+      - 인증 없이 ingest 요청 시 401 응답
+
+  - id: QA-03
+    name: DB 마이그레이션 파이프라인
+    owner: bluevlad
+    testFiles:
+      - e2e/migration.spec.ts
+    testCases:
+      - 최근 48시간 이내 QA 실행 데이터가 DB에 존재한다
+      - 최근 실행 데이터에 필수 필드가 존재한다
+      - 프로젝트 타임라인 데이터를 조회할 수 있다

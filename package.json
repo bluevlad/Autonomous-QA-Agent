@@ -11,6 +11,7 @@
     "test:newsletterplatform": "playwright test --project=newsletterplatform",
     "test:unmong-main": "playwright test --project=unmong-main",
     "test:standup": "playwright test --project=standup",
+    "test:qa-agent": "playwright test --project=qa-agent",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:report": "playwright show-report",

@@ -20,11 +20,11 @@ test.describe('unmong-main 서비스 가용성', () => {
 
 test.describe('unmong-main 하위 서비스 연결 확인', () => {
   const services = [
-    { name: 'TeacherHub', url: process.env.TEACHERHUB_URL || 'http://localhost:4010' },
-    { name: 'AcademyInsight', url: process.env.ACADEMYINSIGHT_URL || 'http://localhost:4020' },
-    { name: 'HealthPulse', url: process.env.HEALTHPULSE_URL || 'http://localhost:4030' },
     { name: 'AllergyInsight', url: process.env.ALLERGYINSIGHT_URL || 'http://localhost:4040' },
     { name: 'HopenVision', url: process.env.HOPENVISION_URL || 'http://localhost:4060' },
+    { name: 'EduFit', url: process.env.EDUFIT_URL || 'http://localhost:4070' },
+    { name: 'NewsLetterPlatform', url: process.env.NEWSLETTERPLATFORM_URL || 'http://localhost:4055' },
+    { name: 'StandUp', url: process.env.STANDUP_API_URL || 'http://localhost:9060' },
   ];
 
   for (const service of services) {

@@ -33,6 +33,8 @@ jobs:
           EDUFIT_API_URL: ${{ secrets.EDUFIT_API_URL }}
           NEWSLETTERPLATFORM_URL: ${{ secrets.NEWSLETTERPLATFORM_URL }}
           STANDUP_API_URL: ${{ secrets.STANDUP_API_URL }}
+          DASHBOARD_API_URL: ${{ secrets.DASHBOARD_API_URL }}
+          DASHBOARD_WEB_URL: ${{ secrets.DASHBOARD_WEB_URL }}
         run: npm run scheduler:run
 
       - name: Upload logs

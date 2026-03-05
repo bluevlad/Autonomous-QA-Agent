@@ -45,7 +45,7 @@ export default defineConfig({
                 },
                 {
                   key: '대상',
-                  value: 'hopenvision, allergyinsight, edufit, standup 외 2개',
+                  value: 'hopenvision, allergyinsight, edufit, standup 외 3개',
                 },
               ],
             },
@@ -158,6 +158,23 @@ export default defineConfig({
       metadata: {
         description: '업무보고 관리 자동화 Agent',
         github: 'bluevlad/StandUp',
+      },
+    },
+
+    // ============================================
+    // Autonomous-QA-Agent (자체 점검)
+    // ============================================
+    {
+      name: 'qa-agent',
+      testDir: './projects/Autonomous-QA-Agent/e2e',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.DASHBOARD_WEB_URL || 'http://172.30.1.72:4095',
+      },
+      metadata: {
+        description: 'QA Dashboard 관제 시스템',
+        github: 'bluevlad/Autonomous-QA-Agent',
+        apiUrl: process.env.DASHBOARD_API_URL || 'http://172.30.1.72:9095',
       },
     },
   ],
